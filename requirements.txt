@@ -1,0 +1,8 @@
+-e git://github.com/release-engineering/estuary-api.git#egg=estuary_api
+fedmsg
+fedmsg[commands]
+fedmsg[consumers]
+moksha.hub
+PyOpenSSL
+stomper
+neomodel
