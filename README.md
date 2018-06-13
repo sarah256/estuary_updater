@@ -2,6 +2,39 @@
 
 A micro-service that updates the Neo4j graph database used by Estuary in real-time
 
+## Run the Unit Tests
+
+Since the unit tests require a running Neo4j instance, the tests are run in Docker containers using
+Docker Compose. The commands required to run the unit tests are abstracted in
+`scripts/run-tests.sh`. This script will create the Docker image required to run the tests based
+on `docker/Dockerfile-tests`, create a container with Neo4j, create another container to run
+the tests based on the built Docker image, run the tests, and then delete the two created
+containers.
+
+To install Docker and Docker Compose on Fedora, run:
+
+```bash
+$ sudo dnf install docker docker-compose
+```
+
+To start Docker, run:
+
+```bash
+$ sudo systemctl start docker
+```
+
+To run the tests, run:
+
+```bash
+$ sudo scripts/run-tests.sh
+```
+
+To run just a single test, you can run:
+
+```bash
+sudo scripts/run-tests.sh pytest -vvv tests/test_file::test_name
+```
+
 ## Code Styling
 
 The codebase conforms to the style enforced by `flake8` with the following exceptions:
@@ -65,4 +98,42 @@ Get a node from Neo4j.
     from estuary_updater.handlers.distgit import DistGitHandler
 
     all_handlers = [DistGitHandler, OtherHandlerHere]
+    ```
+
+## Writing a New Unit Test For Your Handler
+
+* Create a new file to store the JSON message you want to test your handler with. This should be
+    stored in `tests/messages` such as `tests/messages/distgit/new_commit.json`.
+* Create a new file in `tests/handlers/` such as `tests/handlers/distgit.py`.
+* At the top of the new file, add the following license header and imports:
+    ```python
+    # SPDX-License-Identifier: GPL-3.0+
+
+    from __future__ import unicode_literals
+
+    import json
+    from os import path
+    ```
+* Then you can proceed to create your unit test in the same file as such:
+    ```python
+    from estuary.models.distgit import DistGitCommit
+
+    from tests import message_dir
+    from estuary_updater.handlers.distgit import DistGitHandler
+
+
+    def test_distgit_new_commit():
+        """Test the dist-git handler when it recieves a new commit message."""
+        # Load the message to pass to the handler
+        msg = json.load(path.join(message_dir, 'distgit', 'new_commit.json'))
+        # Make sure the handler can handle the message
+        assert DistGitHandler.can_handle(msg) is True
+        # Instantiate the handler
+        handler = DistGitHandler()
+        # Run the handler
+        handler.handle(msg)
+        # Verify everything looks good in Neo4j
+        commit = DistGitCommit.get_or_none(hash_='some_hash_from_the_message')
+        assert commit is not None
+        # Do additional checks here
     ```
