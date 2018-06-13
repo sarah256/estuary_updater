@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import fedmsg.consumers
-import fedmsg.config
 
 from estuary_updater import config, log, version
 from estuary_updater.handlers import all_handlers
