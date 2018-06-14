@@ -2,8 +2,15 @@
 
 from setuptools import setup, find_packages
 
+requirements = []
+dependency_links = []
 with open('requirements.txt', 'r') as f:
-    requirements = f.readlines()
+    for requirement in f.readlines():
+        if requirement.startswith('https://'):
+            requirements.append(requirement.rsplit('#egg=')[-1])
+            dependency_links.append(requirement)
+        else:
+            requirements.append(requirement)
 
 setup(
     name='estuary_updater',
@@ -15,6 +22,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     install_requires=requirements,
+    dependency_links=dependency_links,
     entry_points="""
     [moksha.consumer]
     estuary_updater = estuary_updater.consumer:EstuaryUpdater

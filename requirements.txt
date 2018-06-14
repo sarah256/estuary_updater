@@ -1,4 +1,4 @@
--e git://github.com/release-engineering/estuary-api.git#egg=estuary_api
+https://github.com/release-engineering/estuary-api/tarball/master#egg=estuary
 fedmsg
 fedmsg[commands]
 fedmsg[consumers]

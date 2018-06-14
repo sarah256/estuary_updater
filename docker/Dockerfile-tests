@@ -1,0 +1,38 @@
+FROM fedora:28
+
+RUN dnf -y install \
+  --setopt=deltarpm=0 \
+  --setopt=install_weak_deps=false \
+  --setopt=tsflags=nodocs \
+  bash \
+  nmap-ncat \
+  python2-devel \
+  python3-devel \
+  # Install RPM dependencies from estuary-api otherwise they'll be installed via pip which won't map
+  # to production
+  python2-fedmsg \
+  python3-fedmsg \
+  python3-flake8 \
+  python2-flask \
+  python3-flask \
+  python2-mock \
+  python3-mock \
+  # Until 1.6.0 is supported, we need to hardcode these two entries
+  python2-neo4j-driver-1.5.3 \
+  python3-neo4j-driver-1.5.3 \
+  python2-neomodel \
+  python3-neomodel \
+  python2-pyOpenSSL \
+  python3-pyOpenSSL \
+  python2-pytest \
+  python3-pytest \
+  python2-pytest-cov \
+  python3-pytest-cov \
+  python3-tox \
+  && dnf clean all
+
+RUN pip install flake8-docstrings
+
+VOLUME /src
+WORKDIR /src
+CMD ["bash", "docker/test.sh"]
