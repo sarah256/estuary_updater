@@ -136,7 +136,7 @@ Get a node from Neo4j.
         # Run the handler
         handler.handle(msg)
         # Verify everything looks good in Neo4j
-        commit = DistGitCommit.get_or_none(hash_='some_hash_from_the_message')
+        commit = DistGitCommit.nodes.get_or_none(hash_='some_hash_from_the_message')
         assert commit is not None
         # Do additional checks here
     ```
