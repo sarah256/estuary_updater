@@ -125,7 +125,8 @@ Get a node from Neo4j.
     def test_distgit_new_commit():
         """Test the dist-git handler when it recieves a new commit message."""
         # Load the message to pass to the handler
-        msg = json.load(path.join(message_dir, 'distgit', 'new_commit.json'))
+        with open(path.join(message_dir, 'distgit', 'new_commit.json'), 'r') as f:
+            msg = json.load(f)
         # Make sure the handler can handle the message
         assert DistGitHandler.can_handle(msg) is True
         # Instantiate the handler
