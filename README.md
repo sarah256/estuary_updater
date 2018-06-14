@@ -92,13 +92,15 @@ Get a node from Neo4j.
         """
         # Code goes here to handle/process the message
     ```
-* Lastly, register your handler by adding the class to `estuary_updater.handlers.all_handlers` such
+* Then register your handler by adding the class to `estuary_updater.handlers.all_handlers` such
     as:
     ```python
     from estuary_updater.handlers.distgit import DistGitHandler
 
     all_handlers = [DistGitHandler, OtherHandlerHere]
     ```
+* Lastly, add any additional topics to the `fedmsg.d/config.py` file by editing
+    the `estuary_updater.topics` value.
 
 ## Writing a New Unit Test For Your Handler
 
