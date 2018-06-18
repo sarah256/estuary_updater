@@ -15,6 +15,8 @@ RUN dnf -y install \
   python3-flake8 \
   python2-flask \
   python3-flask \
+  python2-koji \
+  python3-koji \
   python2-mock \
   python3-mock \
   # Until 1.6.0 is supported, we need to hardcode these two entries

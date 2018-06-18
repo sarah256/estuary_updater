@@ -2,6 +2,7 @@ https://github.com/release-engineering/estuary-api/tarball/master#egg=estuary
 fedmsg
 fedmsg[commands]
 fedmsg[consumers]
+koji
 moksha.hub
 PyOpenSSL
 stomper
