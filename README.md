@@ -122,6 +122,7 @@ Get a node from Neo4j.
 
     from tests import message_dir
     from estuary_updater.handlers.distgit import DistGitHandler
+    from estuary_updater import config
 
 
     def test_distgit_new_commit():
@@ -132,7 +133,7 @@ Get a node from Neo4j.
         # Make sure the handler can handle the message
         assert DistGitHandler.can_handle(msg) is True
         # Instantiate the handler
-        handler = DistGitHandler()
+        handler = DistGitHandler(config)
         # Run the handler
         handler.handle(msg)
         # Verify everything looks good in Neo4j
