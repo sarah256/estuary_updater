@@ -1,0 +1,53 @@
+{
+    "body":{
+        "headers":{
+            "content-length": "756", 
+            "destination": "/topic/VirtualTopic.eng.freshmaker.build.state.changed", 
+            "JMS_AMQP_MESSAGE_FORMAT": "0", 
+            "JMS_AMQP_NATIVE": "false", 
+            "expires": "0", 
+            "priority": "4", 
+            "message-id": "ID:messaging.domain.com-42045-1527890187852-9:776487:0:0:1", 
+            "timestamp": "0", 
+            "JMS_AMQP_FirstAcquirer": "false", 
+            "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>"
+        },
+        "msg":{
+            "build_id": 16735050, 
+            "state_reason": "Built successfully.", 
+            "time_completed": "2018-06-14T23:50:37Z", 
+            "name": "logging-kibana-container", 
+            "time_submitted": "2018-06-14T20:26:06Z", 
+            "event_id": 2094, 
+            "original_nvr": "logging-kibana-container-v3.9.30-3", 
+            "type_name": "IMAGE", 
+            "state_name": "DONE", 
+            "url": "http://freshmaker.domain.com/api/1/builds/1260", 
+            "state": 1, 
+            "build_args": {
+                "repository": "containers/logging-kibana", 
+                "commit": "67523932bef27cc6b5396b5d6c1f5ecd7a732b4b", 
+                "parent": "rh-nodejs6-docker-6-19.1529007867", 
+                "branch": "rhaos-3.9-rhel-7", 
+                "target": "rhaos-3.9-rhel-7-containers-candidate"
+            }, 
+            "dep_on": "rh-nodejs6-docker", 
+            "type": 1, 
+            "id": 1260, 
+            "rebuilt_nvr": "logging-kibana-container-v3.9.30-3.1529007966"
+        }
+    },
+    "topic":"/topic/VirtualTopic.eng.freshmaker.build.state.changed",
+    "headers":{
+        "content-length": "756", 
+        "destination": "/topic/VirtualTopic.eng.freshmaker.build.state.changed", 
+        "JMS_AMQP_MESSAGE_FORMAT": "0", 
+        "JMS_AMQP_NATIVE": "false", 
+        "expires": "0", 
+        "priority": "4", 
+        "message-id": "ID:messaging.domain.com-42045-1527890187852-9:776487:0:0:1", 
+        "timestamp": "0", 
+        "JMS_AMQP_FirstAcquirer": "false", 
+        "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>"
+    }
+}

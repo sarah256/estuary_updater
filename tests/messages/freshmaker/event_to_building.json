@@ -7,7 +7,7 @@
             "JMS_AMQP_NATIVE": "false",
             "expires": "0",
             "priority": "4",
-            "message-id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-42045-1527890187852-9:704288:0:0:1",
+            "message-id": "ID:messaging.domain.com-42045-1527890187852-9:704288:0:0:1",
             "timestamp": "0",
             "JMS_AMQP_FirstAcquirer": "false",
             "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>"
@@ -25,14 +25,14 @@
                     "original_nvr": "e2e-container-test-product-container-7.5-129",
                     "type_name": "IMAGE",
                     "state_name": "BUILD",
-                    "url": "http://freshmaker-prod.cloud.upshift.engineering.redhat.com/api/1/builds/1216",
+                    "url": "http://freshmaker.domain.com/api/1/builds/1216",
                     "state": 0,
                     "build_args": {
-                    "repository": "containers/e2e-container-test-product",
-                    "commit": "7557cdb7bda16561ae039ed053f50203f72f1484",
-                    "parent": "rhel-server-docker-7.5-241",
-                    "branch": "release-e2e-test-1.0-rhel-7",
-                    "target": "release-e2e-test-1.0-rhel-7-containers-candidate"
+                        "repository": "containers/e2e-container-test-product",
+                        "commit": "7557cdb7bda16561ae039ed053f50203f72f1484",
+                        "parent": "rhel-server-docker-7.5-241",
+                        "branch": "release-e2e-test-1.0-rhel-7",
+                        "target": "release-e2e-test-1.0-rhel-7-containers-candidate"
                     },
                     "dep_on": null,
                     "type": 1,
@@ -49,14 +49,14 @@
                     "original_nvr": "e2e-container-test-product-container-7.3-210.1523551880",
                     "type_name": "IMAGE",
                     "state_name": "BUILD",
-                    "url": "http://freshmaker-prod.cloud.upshift.engineering.redhat.com/api/1/builds/1217",
+                    "url": "http://freshmaker.domain.com/api/1/builds/1217",
                     "state": 0,
                     "build_args": {
-                    "repository": "containers/e2e-container-test-product",
-                    "commit": "05cc879b4c9c4db0cb264730deeeb7cde561041a",
-                    "parent": "rhel-server-docker-7.3-97",
-                    "branch": "release-e2e-test-1.0-rhel-7",
-                    "target": "release-e2e-test-1.0-rhel-7-containers-candidate"
+                        "repository": "containers/e2e-container-test-product",
+                        "commit": "05cc879b4c9c4db0cb264730deeeb7cde561041a",
+                        "parent": "rhel-server-docker-7.3-97",
+                        "branch": "release-e2e-test-1.0-rhel-7",
+                        "target": "release-e2e-test-1.0-rhel-7-containers-candidate"
                     },
                     "dep_on": null,
                     "type": 1,
@@ -76,11 +76,11 @@
                     "url": "http://freshmaker.domain.com/api/1/builds/1218",
                     "state": 0,
                     "build_args": {
-                    "repository": "containers/e2e-container-test-product",
-                    "commit": "29c4da5685635729b24f9daf8e2d3eaa5f978046",
-                    "parent": "rhel-server-docker-7.4-171",
-                    "branch": "release-e2e-test-1.0-rhel-7",
-                    "target": "release-e2e-test-1.0-rhel-7-containers-candidate"
+                        "repository": "containers/e2e-container-test-product",
+                        "commit": "29c4da5685635729b24f9daf8e2d3eaa5f978046",
+                        "parent": "rhel-server-docker-7.4-171",
+                        "branch": "release-e2e-test-1.0-rhel-7",
+                        "target": "release-e2e-test-1.0-rhel-7-containers-candidate"
                     },
                     "dep_on": null,
                     "type": 1,
@@ -93,7 +93,7 @@
             "id": 2092,
             "state": 1,
             "event_type_id": 8,
-            "message_id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01",
+            "message_id": "ID:messaging.domain.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01",
             "state_name": "BUILDING"
         }
     },
@@ -105,7 +105,7 @@
         "JMS_AMQP_NATIVE": "false",
         "expires": "0",
         "priority": "4",
-        "message-id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-42045-1527890187852-9:704288:0:0:1",
+        "message-id": "ID:messaging.domain.com-42045-1527890187852-9:704288:0:0:1",
         "timestamp": "0",
         "JMS_AMQP_FirstAcquirer": "false",
         "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>"

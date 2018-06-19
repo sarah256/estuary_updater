@@ -47,8 +47,8 @@ def test_event_to_building(mock_koji_cs):
     # Check to see if properties are correct
     assert event.id_ == '2092'
     assert event.event_type_id == 8
-    assert event.message_id == ('ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-42045-15'
-                                '27890187852-9:704208:0:0:1.RHBA-8018:0593-01')
+    assert event.message_id == \
+        'ID:messaging.domain.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01'
     assert event.state == 1
     assert event.state_name == 'BUILDING'
     assert event.url == 'http://freshmaker.domain.com/api/1/events/2092'
@@ -62,13 +62,57 @@ def test_event_to_building(mock_koji_cs):
     assert build is not None
     assert build.original_nvr == orig_nvr
     assert event.triggered_container_builds.is_connected(build)
+    assert build.state == 0
     build = ContainerKojiBuild.nodes.get_or_none(id_=123456)
     orig_nvr = 'e2e-container-test-product-container-7.3-210.1523551880'
     assert build is not None
     assert build.original_nvr == orig_nvr
     assert event.triggered_container_builds.is_connected(build)
+    assert build.state == 0
     build = ContainerKojiBuild.nodes.get_or_none(id_=234567)
     orig_nvr = 'e2e-container-test-product-container-7.4-36'
     assert build is not None
     assert build.original_nvr == orig_nvr
     assert event.triggered_container_builds.is_connected(build)
+    assert build.state == 0
+
+
+@mock.patch('koji.ClientSession')
+def test_build_state_change(mock_koji_cs):
+    """Test the Freshmaker handler when it receives a build state change message."""
+    mock_koji_session = mock.Mock()
+    mock_koji_session.getTaskResult.side_effect = [
+        {
+            'koji_builds': ['710916']
+        }
+    ]
+    mock_koji_cs.return_value = mock_koji_session
+    event = FreshmakerEvent.get_or_create({
+        'id_': '2094',
+        'state': 1,
+        'state_name': 'BUILDING',
+        'url': 'http://freshmaker.domain.com/api/1/events/2094',
+        'event_type_id': 8,
+        'message_id': 'ID:messaging.domain.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01'
+    })[0]
+    build = ContainerKojiBuild.create_or_update({
+        'id_': '710916',
+        'original_nvr': 'logging-kibana-container-v3.9.30-3',
+        'state': 0
+    })[0]
+    event.triggered_container_builds.connect(build)
+    # Load the message to pass to the handler
+    with open(path.join(message_dir, 'freshmaker', 'build_state_change.json'), 'r') as f:
+        msg = json.load(f)
+    # Make sure the handler can handle the message
+    assert FreshmakerHandler.can_handle(msg) is True
+    # Instantiate the handler
+    handler = FreshmakerHandler(config)
+    # Run the handler
+    handler.handle(msg)
+
+    build = ContainerKojiBuild.nodes.get_or_none(id_=710916)
+    orig_nvr = 'logging-kibana-container-v3.9.30-3'
+    assert build is not None
+    assert build.original_nvr == orig_nvr
+    assert build.state == 1
