@@ -1,0 +1,113 @@
+{
+    "body": {
+        "headers": {
+            "content-length": "2831",
+            "destination": "/topic/VirtualTopic.eng.freshmaker.event.state.changed",
+            "JMS_AMQP_MESSAGE_FORMAT": "0",
+            "JMS_AMQP_NATIVE": "false",
+            "expires": "0",
+            "priority": "4",
+            "message-id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-42045-1527890187852-9:704288:0:0:1",
+            "timestamp": "0",
+            "JMS_AMQP_FirstAcquirer": "false",
+            "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>"
+        },
+        "msg": {
+            "state_reason": "Waiting for composes to finish in order to start to schedule base images for rebuild.",
+            "builds": [
+                {
+                    "build_id": 16722637,
+                    "state_reason": "Building container image in Koji.",
+                    "time_completed": null,
+                    "name": "e2e-container-test-product-container",
+                    "time_submitted": "2018-06-14T09:23:31Z",
+                    "event_id": 2092,
+                    "original_nvr": "e2e-container-test-product-container-7.5-129",
+                    "type_name": "IMAGE",
+                    "state_name": "BUILD",
+                    "url": "http://freshmaker-prod.cloud.upshift.engineering.redhat.com/api/1/builds/1216",
+                    "state": 0,
+                    "build_args": {
+                    "repository": "containers/e2e-container-test-product",
+                    "commit": "7557cdb7bda16561ae039ed053f50203f72f1484",
+                    "parent": "rhel-server-docker-7.5-241",
+                    "branch": "release-e2e-test-1.0-rhel-7",
+                    "target": "release-e2e-test-1.0-rhel-7-containers-candidate"
+                    },
+                    "dep_on": null,
+                    "type": 1,
+                    "id": 1216,
+                    "rebuilt_nvr": "e2e-container-test-product-container-7.5-129.1528968211"
+                },
+                {
+                    "build_id": 16722638,
+                    "state_reason": "Building container image in Koji.",
+                    "time_completed": null,
+                    "name": "e2e-container-test-product-container",
+                    "time_submitted": "2018-06-14T09:23:32Z",
+                    "event_id": 2092,
+                    "original_nvr": "e2e-container-test-product-container-7.3-210.1523551880",
+                    "type_name": "IMAGE",
+                    "state_name": "BUILD",
+                    "url": "http://freshmaker-prod.cloud.upshift.engineering.redhat.com/api/1/builds/1217",
+                    "state": 0,
+                    "build_args": {
+                    "repository": "containers/e2e-container-test-product",
+                    "commit": "05cc879b4c9c4db0cb264730deeeb7cde561041a",
+                    "parent": "rhel-server-docker-7.3-97",
+                    "branch": "release-e2e-test-1.0-rhel-7",
+                    "target": "release-e2e-test-1.0-rhel-7-containers-candidate"
+                    },
+                    "dep_on": null,
+                    "type": 1,
+                    "id": 1217,
+                    "rebuilt_nvr": "e2e-container-test-product-container-7.3-210.1528968212"
+                },
+                {
+                    "build_id": 16722639,
+                    "state_reason": "Building container image in Koji.",
+                    "time_completed": null,
+                    "name": "e2e-container-test-product-container",
+                    "time_submitted": "2018-06-14T09:23:36Z",
+                    "event_id": 2092,
+                    "original_nvr": "e2e-container-test-product-container-7.4-36",
+                    "type_name": "IMAGE",
+                    "state_name": "BUILD",
+                    "url": "http://freshmaker.domain.com/api/1/builds/1218",
+                    "state": 0,
+                    "build_args": {
+                    "repository": "containers/e2e-container-test-product",
+                    "commit": "29c4da5685635729b24f9daf8e2d3eaa5f978046",
+                    "parent": "rhel-server-docker-7.4-171",
+                    "branch": "release-e2e-test-1.0-rhel-7",
+                    "target": "release-e2e-test-1.0-rhel-7-containers-candidate"
+                    },
+                    "dep_on": null,
+                    "type": 1,
+                    "id": 1218,
+                    "rebuilt_nvr": "e2e-container-test-product-container-7.4-36.1528968216"
+                }
+            ],
+            "url": "http://freshmaker.domain.com/api/1/events/2092",
+            "search_key": "34625",
+            "id": 2092,
+            "state": 1,
+            "event_type_id": 8,
+            "message_id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01",
+            "state_name": "BUILDING"
+        }
+    },
+    "topic": "/topic/VirtualTopic.eng.freshmaker.event.state.changed",
+    "headers": {
+        "content-length": "2831",
+        "destination": "/topic/VirtualTopic.eng.freshmaker.event.state.changed",
+        "JMS_AMQP_MESSAGE_FORMAT": "0",
+        "JMS_AMQP_NATIVE": "false",
+        "expires": "0",
+        "priority": "4",
+        "message-id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-42045-1527890187852-9:704288:0:0:1",
+        "timestamp": "0",
+        "JMS_AMQP_FirstAcquirer": "false",
+        "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>"
+    }
+}
