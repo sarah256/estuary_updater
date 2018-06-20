@@ -78,6 +78,85 @@ def test_event_to_building(mock_koji_cs):
 
 
 @mock.patch('koji.ClientSession')
+def test_event_to_complete(mock_koji_cs):
+    """Test the Freshmaker handler when it receives an event to complete message."""
+    mock_koji_session = mock.Mock()
+    mock_koji_session.getTaskResult.side_effect = [
+        {
+            'koji_builds': ['710916']
+        },
+        {
+            'koji_builds': ['123456']
+        },
+        {
+            'koji_builds': ['234567']
+        }
+    ]
+    mock_koji_cs.return_value = mock_koji_session
+    event = FreshmakerEvent.get_or_create({
+        'id_': '2194',
+        'state': 1,
+        'state_name': 'BUILDING',
+        'url': 'http://freshmaker.domain.com/api/1/events/2194',
+        'event_type_id': 8,
+        'message_id':
+            'ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01'
+    })[0]
+    ContainerKojiBuild.get_or_create({
+        'id_': 710916,
+        'original_nvr': 'e2e-container-test-product-container-7.3-210.1523551880',
+        'state': 3
+    })[0].triggered_by_freshmaker_event.connect(event)
+    ContainerKojiBuild.get_or_create({
+        'id_': 123456,
+        'original_nvr': 'e2e-container-test-product-container-7.4-36',
+        'state': 3
+    })[0].triggered_by_freshmaker_event.connect(event)
+    ContainerKojiBuild.get_or_create({
+        'id_': 234567,
+        'original_nvr': 'e2e-container-test-product-container-7.5-133',
+        'state': 1
+    })[0].triggered_by_freshmaker_event.connect(event)
+    # Load the message to pass to the handler
+    with open(path.join(message_dir, 'freshmaker', 'event_to_complete.json'), 'r') as f:
+        msg = json.load(f)
+    # Make sure the handler can handle the message
+    assert FreshmakerHandler.can_handle(msg) is True
+    # Instantiate the handler
+    handler = FreshmakerHandler(config)
+    # Run the handler
+    handler.handle(msg)
+
+    event = FreshmakerEvent.nodes.get_or_none(id_='2194')
+    assert event is not None
+    assert event.event_type_id == 8
+    assert event.message_id == \
+        'ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01'
+    assert event.url == 'http://freshmaker.domain.com/api/1/events/2194'
+    assert event.state == 2
+    assert event.state_name == 'COMPLETE'
+
+    build = ContainerKojiBuild.nodes.get_or_none(id_=710916)
+    orig_nvr = 'e2e-container-test-product-container-7.3-210.1523551880'
+    assert build is not None
+    assert build.original_nvr == orig_nvr
+    assert build.state == 3
+    assert event.triggered_container_builds.is_connected(build)
+    build = ContainerKojiBuild.nodes.get_or_none(id_=123456)
+    orig_nvr = 'e2e-container-test-product-container-7.4-36'
+    assert build is not None
+    assert build.original_nvr == orig_nvr
+    assert build.state == 3
+    assert event.triggered_container_builds.is_connected(build)
+    build = ContainerKojiBuild.nodes.get_or_none(id_=234567)
+    orig_nvr = 'e2e-container-test-product-container-7.5-133'
+    assert build is not None
+    assert build.original_nvr == orig_nvr
+    assert build.state == 1
+    assert event.triggered_container_builds.is_connected(build)
+
+
+@mock.patch('koji.ClientSession')
 def test_build_state_change(mock_koji_cs):
     """Test the Freshmaker handler when it receives a build state change message."""
     mock_koji_session = mock.Mock()
