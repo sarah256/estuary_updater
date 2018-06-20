@@ -15,6 +15,13 @@ from estuary_updater import log
 class FreshmakerHandler(BaseHandler):
     """A handler for Freshmaker-related messages."""
 
+    # Translates the Freshmaker build state to its equivalent in Koji
+    freshmaker_to_koji_states = {
+        0: 0,
+        1: 1,
+        2: 3
+    }
+
     @staticmethod
     def can_handle(msg):
         """
@@ -24,7 +31,12 @@ class FreshmakerHandler(BaseHandler):
         :return: a bool based on if the handler can handle this kind of message
         :rtype: bool
         """
-        return msg['topic'] == '/topic/VirtualTopic.eng.freshmaker.event.state.changed'
+        supported_topics = [
+            '/topic/VirtualTopic.eng.freshmaker.event.state.changed',
+            '/topic/VirtualTopic.eng.freshmaker.build.state.changed'
+        ]
+
+        return msg['topic'] in supported_topics
 
     def handle(self, msg):
         """
@@ -32,43 +44,83 @@ class FreshmakerHandler(BaseHandler):
 
         :param dict msg: a message to be processed
         """
-        event = FreshmakerEvent.create_or_update(dict(
-            id_=msg['body']['msg']['id'],
-            event_type_id=msg['body']['msg']['event_type_id'],
-            message_id=msg['body']['msg']['message_id'],
-            state=msg['body']['msg']['state'],
-            state_name=msg['body']['msg']['state_name'],
-            url=msg['body']['msg']['url']
-        ))[0]
+        topic = msg['topic']
+        self.koji_session = koji.ClientSession(self.config['estuary_updater.koji_url'])
 
-        advisory = Advisory.get_or_create(dict(
-            id_=msg['body']['msg']['search_key']
-        ))[0]
+        if topic == '/topic/VirtualTopic.eng.freshmaker.event.state.changed':
+            self.event_state_handler(msg)
+        elif topic == '/topic/VirtualTopic.eng.freshmaker.build.state.changed':
+            self.build_state_handler(msg)
+        else:
+            raise RuntimeError('This message is unable to be handled: {0}'.format(msg))
+
+    def event_state_handler(self, msg):
+        """
+        Handle a Freshmaker event state changed message and update Neo4j if necessary.
+
+        :param dict msg: a message to be processed
+        """
+        event = FreshmakerEvent.create_or_update({
+            'id_': msg['body']['msg']['id'],
+            'event_type_id': msg['body']['msg']['event_type_id'],
+            'message_id': msg['body']['msg']['message_id'],
+            'state': msg['body']['msg']['state'],
+            'state_name': msg['body']['msg']['state_name'],
+            'url': msg['body']['msg']['url']
+        })[0]
+
+        advisory = Advisory.get_or_create({
+            'id_': msg['body']['msg']['search_key']
+        })[0]
 
         event.conditional_connect(event.triggered_by_advisory, advisory)
 
-        koji_session = koji.ClientSession(self.config['estuary_updater.koji_url'])
         builds = msg['body']['msg']['builds']
 
         for build in builds:
-            try:
-                koji_task_result = koji_session.getTaskResult(build['build_id'])
-            except Exception as error:
-                log.warning("Failed to get the TaskResult with ID {0}".format(build['build_id']))
-                log.exception(error)
-                continue
-            koji_build_id = koji_task_result['koji_builds'][0]
-            build_params = {
-                'id_': koji_build_id,
-                'original_nvr': build['original_nvr']
-            }
-            try:
-                build = ContainerKojiBuild.create_or_update(build_params)[0]
-            except neomodel.exceptions.ConstraintValidationFailed:
-                build = KojiBuild.nodes.get_or_none(id_=koji_build_id)
-                if not build:
-                    raise
-                build.add_label(ContainerKojiBuild.__label__)
-                build = ContainerKojiBuild.get_or_create(build_params)[0]
+            koji_build = self.create_or_update_build(build)
+            if koji_build:
+                event.triggered_container_builds.connect(koji_build)
 
-            event.triggered_container_builds.connect(build)
+    def build_state_handler(self, msg):
+        """
+        Handle a Freshmaker build state changed message and update Neo4j if necessary.
+
+        :param dict msg: a message to be processed
+        """
+        build = msg['body']['msg']
+        self.create_or_update_build(build)
+
+    def create_or_update_build(self, build):
+        """
+        Use the Koji Task Result to create or update a ContainerKojiBuild.
+
+        :param dict build: the build being created or updated
+        :return: the created/updated ContainerKojiBuild or None if it cannot be created
+        :rtype: ContainerKojiBuild or None
+        """
+        try:
+            koji_task_result = self.koji_session.getTaskResult(build['build_id'])
+        except Exception as error:
+            log.warning('Failed to get the Koji task result with ID {0}'.format(build['build_id']))
+            log.exception(error)
+            return None
+        koji_build_id = koji_task_result['koji_builds'][0]
+        build_params = {
+            'id_': koji_build_id,
+            'original_nvr': build['original_nvr']
+        }
+        if build['state'] in self.freshmaker_to_koji_states:
+            build_params['state'] = self.freshmaker_to_koji_states[build['state']]
+        else:
+            log.warning('Encounted an unknown Freshmaker build state of: {0}'.format(
+                build_params['state']))
+        try:
+            build = ContainerKojiBuild.create_or_update(build_params)[0]
+        except neomodel.exceptions.ConstraintValidationFailed:
+            build = KojiBuild.nodes.get_or_none(id_=koji_build_id)
+            if not build:
+                raise
+            build.add_label(ContainerKojiBuild.__label__)
+            build = ContainerKojiBuild.get_or_create(build_params)[0]
+        return build
