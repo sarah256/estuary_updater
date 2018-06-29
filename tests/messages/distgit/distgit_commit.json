@@ -1,0 +1,83 @@
+{
+    "body":{
+        "headers":{
+            "username": "emusk",
+            "repo": "openldap",
+            "content-length": "664",
+            "expires": "0",
+            "JMS_AMQP_MESSAGE_FORMAT": "0",
+            "rev": "2cc7f45c8aae163feed162478622f5f9165c8e78",
+            "JMS_AMQP_NATIVE": "false",
+            "destination": "/topic/VirtualTopic.eng.distgit.commit",
+            "namespace": "rpms",
+            "agent": "emusk",
+            "priority": "4",
+            "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>",
+            "message-id": "ID:messaging.domain.com-42045-1527890187852-9:1160894:0:0:1",
+            "timestamp": "0",
+            "branch": "rhel-7.6",
+            "seen": "false",
+            "path": "/srv/git/rpms/openldap.git",
+            "JMS_AMQP_FirstAcquirer": "false",
+            "email": "emusk@redhat.com",
+            "name": "Elon Musk"
+        },
+        "msg":{
+            "username": "emusk",
+            "stats": {
+                "files": {
+                    "openldap.spec": {
+                        "deletions": 1,
+                        "additions": 6,
+                        "lines": 7
+                    },
+                    "openldap-tlsmc.patch": {
+                        "deletions": 2,
+                        "additions": 7,
+                        "lines": 9
+                    }
+                },
+                "total": {
+                    "deletions": 3,
+                    "files": 2,
+                    "additions": 13,
+                    "lines": 16
+                }
+            },
+            "name": "Elon Musk",
+            "rev": "2cc7f45c8aae163feed162478622f5f9165c8e78",
+            "namespace": "rpms",
+            "agent": "emusk",
+            "summary": "MozNSS Compat. Layer: Fix memleaks reported by valgrind",
+            "repo": "openldap",
+            "branch": "rhel-7.6",
+            "seen": false,
+            "path": "/srv/git/rpms/openldap.git",
+            "message": "Layer: Fix memleaks\n\nResolves: rhbz1534646, rhbz1484051\nRelated: #1234567, rhbz#2345678\n",
+            "email": "emusk@redhat.com"
+        }  
+    },
+    "topic":"/topic/VirtualTopic.eng.distgit.commit",
+    "headers":{
+        "username": "emusk",
+        "repo": "openldap",
+        "content-length": "664",
+        "expires": "0",
+        "JMS_AMQP_MESSAGE_FORMAT": "0",
+        "rev": "2cc7f45c8aae163feed162478622f5f9165c8e78",
+        "JMS_AMQP_NATIVE": "false",
+        "destination": "/topic/VirtualTopic.eng.distgit.commit",
+        "namespace": "rpms",
+        "agent": "emusk",
+        "priority": "4",
+        "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>",
+        "message-id": "ID:messaging.domain.com-42045-1527890187852-9:1160894:0:0:1",
+        "timestamp": "0",
+        "branch": "rhel-7.6",
+        "seen": "false",
+        "path": "/srv/git/rpms/openldap.git",
+        "JMS_AMQP_FirstAcquirer": "false",
+        "email": "emusk@redhat.com",
+        "name": "Elon Musk"
+    }
+}

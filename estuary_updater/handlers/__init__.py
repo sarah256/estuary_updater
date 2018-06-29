@@ -3,6 +3,8 @@
 from __future__ import unicode_literals
 
 from estuary_updater.handlers.freshmaker import FreshmakerHandler
+from estuary_updater.handlers.distgit import DistGitHandler
+
 
 # All handler classes are added here
-all_handlers = [FreshmakerHandler]
+all_handlers = [FreshmakerHandler, DistGitHandler]
