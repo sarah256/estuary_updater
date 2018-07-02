@@ -23,11 +23,28 @@ class DistGitHandler(BaseHandler):
         :return: a bool based on if the handler can handle this kind of message
         :rtype: bool
         """
-        return msg['topic'] == '/topic/VirtualTopic.eng.distgit.commit'
+        supported_topics = [
+            '/topic/VirtualTopic.eng.distgit.commit',
+            '/topic/VirtualTopic.eng.distgit.push'
+        ]
+        return msg['topic'] in supported_topics
 
     def handle(self, msg):
         """
-        Handle a dist-git message and update Neo4j if necessary.
+        Handle a dist-git message by sending it to the right handler method and update Neo4j.
+
+        :param dict msg: a message to be processed
+        """
+        if msg['topic'] == '/topic/VirtualTopic.eng.distgit.commit':
+            self.commit_handler(msg)
+        elif msg['topic'] == '/topic/VirtualTopic.eng.distgit.push':
+            self.push_handler(msg)
+        else:
+            raise RuntimeError('This message is unable to be handled: {0}'.format(msg))
+
+    def commit_handler(self, msg):
+        """
+        Handle a dist-git commit message and update Neo4j if necessary.
 
         :param dict msg: a message to be processed
         """
@@ -89,3 +106,20 @@ class DistGitHandler(BaseHandler):
 
         branch.contributors.connect(author)
         branch.commits.connect(commit)
+
+    def push_handler(self, msg):
+        """
+        Handle dist-git push messages by updating the parent-child relationship of commits in Neo4j.
+
+        :param dict msg: a message to be processed
+        """
+        commits = msg['body']['msg']['commits']
+        parent = DistGitCommit.get_or_create({
+            'hash_': msg['body']['msg']['oldrev']
+        })[0]
+        for commit in commits:
+            child = DistGitCommit.get_or_create({
+                'hash_': commit
+            })[0]
+            child.parent.connect(parent)
+            parent = child
