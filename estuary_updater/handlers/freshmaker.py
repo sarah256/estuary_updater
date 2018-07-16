@@ -76,9 +76,10 @@ class FreshmakerHandler(BaseHandler):
         event.conditional_connect(event.triggered_by_advisory, advisory)
 
         builds = msg['body']['msg']['builds']
+        event_id = msg['body']['msg']['id']
 
         for build in builds:
-            koji_build = self.create_or_update_build(build)
+            koji_build = self.create_or_update_build(build, event_id)
             if koji_build:
                 event.triggered_container_builds.connect(koji_build)
 
@@ -89,16 +90,22 @@ class FreshmakerHandler(BaseHandler):
         :param dict msg: a message to be processed
         """
         build = msg['body']['msg']
-        self.create_or_update_build(build)
+        event_id = msg['body']['msg']['id']
+        self.create_or_update_build(build, event_id)
 
-    def create_or_update_build(self, build):
+    def create_or_update_build(self, build, event_id):
         """
         Use the Koji Task Result to create or update a ContainerKojiBuild.
 
         :param dict build: the build being created or updated
+        :param int event_id: the id of the Freshmaker event
         :return: the created/updated ContainerKojiBuild or None if it cannot be created
         :rtype: ContainerKojiBuild or None
         """
+        if not build['build_id']:
+            log.debug('Skipping build update for event {0} because no build ID exists.'.format(
+                event_id))
+            return None
         try:
             koji_task_result = self.koji_session.getTaskResult(build['build_id'])
         except Exception as error:
