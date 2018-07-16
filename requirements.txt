@@ -7,3 +7,5 @@ moksha.hub
 PyOpenSSL
 stomper
 neomodel
+requests
+requests_kerberos

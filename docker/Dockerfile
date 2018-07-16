@@ -16,6 +16,8 @@ RUN dnf -y install \
   python3-koji \
   python3-neomodel \
   python3-pyOpenSSL \
+  python3-requests \
+  python3-requests-kerberos \
   python3-stomper \
   && dnf clean all
 # Install estuary-api directly from GitHub since there aren't any releases yet
