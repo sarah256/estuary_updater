@@ -27,6 +27,12 @@ RUN dnf -y install \
   python3-pytest \
   python2-pytest-cov \
   python3-pytest-cov \
+  python2-pytz \
+  python3-pytz \
+  python2-requests \
+  python3-requests \
+  python2-requests-kerberos \
+  python3-requests-kerberos \
   python3-tox \
   && dnf clean all
 
