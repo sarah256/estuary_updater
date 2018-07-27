@@ -29,7 +29,8 @@ class ErrataHandler(BaseHandler):
         """
         supported_topics = [
             '/topic/VirtualTopic.eng.errata.activity.status',
-            '/topic/VirtualTopic.eng.errata.builds.added'
+            '/topic/VirtualTopic.eng.errata.builds.added',
+            '/topic/VirtualTopic.eng.errata.builds.removed'
         ]
         return msg['topic'] in supported_topics
 
@@ -45,6 +46,8 @@ class ErrataHandler(BaseHandler):
             self.activity_status_handler(msg)
         elif topic == '/topic/VirtualTopic.eng.errata.builds.added':
             self.builds_added_handler(msg)
+        elif topic == '/topic/VirtualTopic.eng.errata.builds.removed':
+            self.builds_removed_handler(msg)
         else:
             raise RuntimeError('This message is unable to be handled: {0}'.format(msg))
 
@@ -91,46 +94,72 @@ class ErrataHandler(BaseHandler):
             bug = BugzillaBug.get_or_create({'id_': bug['bug']['id']})[0]
             advisory.attached_bugs.connect(bug)
 
-    def builds_added_handler(self, msg):
+    def get_or_create_build(self, msg):
         """
-        Handle an Errata tool activity status message and update Neo4j if necessary.
+        Get a Koji build from Neo4j, or create it if it does not exist in Neo4j.
 
         :param dict msg: a message to be processed
+        :rtype: KojiBuild
+        :return: the Koji Build retrieved or created from Neo4j
         """
         self.koji_session = koji.ClientSession(self.config['estuary_updater.koji_url'])
 
         nvr = msg['body']['headers']['brew_build']
 
         try:
-            koji_build = self.koji_session.getBuild(nvr, strict=True)
+            koji_build_info = self.koji_session.getBuild(nvr, strict=True)
         except Exception:
             log.error('Failed to get brew build with NVR {0}'.format(nvr))
             raise
 
         build_params = {
-            'completion_time': koji_build['completion_time'],
-            'creation_time': koji_build['creation_time'],
-            'epoch': koji_build['epoch'],
-            'extra': koji_build['extra'],
-            'id_': koji_build['id'],
-            'name': koji_build['package_name'],
-            'release': koji_build['release'],
-            'start_time': koji_build['start_time'],
-            'state': koji_build['state'],
-            'version': koji_build['version']
+            'completion_time': koji_build_info['completion_time'],
+            'creation_time': koji_build_info['creation_time'],
+            'epoch': koji_build_info['epoch'],
+            'extra': koji_build_info['extra'],
+            'id_': koji_build_info['id'],
+            'name': koji_build_info['package_name'],
+            'release': koji_build_info['release'],
+            'start_time': koji_build_info['start_time'],
+            'state': koji_build_info['state'],
+            'version': koji_build_info['version']
         }
 
-        build = KojiBuild.create_or_update(build_params)[0]
+        owner = User.create_or_update({
+            'username': koji_build_info['owner_name'],
+            'email': '{0}@redhat.com'.format(koji_build_info['owner_name'])
+        })[0]
 
+        koji_build = KojiBuild.create_or_update(build_params)[0]
+
+        koji_build.owner.connect(owner)
+
+        return koji_build
+
+    def builds_added_handler(self, msg):
+        """
+        Handle an Errata tool builds added message and update Neo4j if necessary.
+
+        :param dict msg: a message to be processed
+        """
         advisory = Advisory.get_or_create({
             'id_': msg['body']['headers']['errata_id']
         })[0]
 
-        advisory.attached_builds.connect(build)
+        koji_build = self.get_or_create_build(msg)
 
-        owner = User.create_or_update({
-            'username': koji_build['owner_name'],
-            'email': '{0}@redhat.com'.format(koji_build['owner_name'])
+        advisory.attached_builds.connect(koji_build)
+
+    def builds_removed_handler(self, msg):
+        """
+        Handle an Errata tool builds removed message and update Neo4j if necessary.
+
+        :param dict msg: a message to be processed
+        """
+        advisory = Advisory.get_or_create({
+            'id_': msg['body']['headers']['errata_id']
         })[0]
 
-        build.owner.connect(owner)
+        koji_build = self.get_or_create_build(msg)
+
+        advisory.attached_builds.disconnect(koji_build)
