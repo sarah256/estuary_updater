@@ -1,0 +1,56 @@
+{
+    "body": {
+        "headers": {
+            "product": "RHOSE",
+            "expires": "0",
+            "errata_id": "34983",
+            "JMS_AMQP_MESSAGE_FORMAT": "0",
+            "JMS_AMQP_NATIVE": "false",
+            "destination": "/topic/VirtualTopic.eng.errata.builds.removed",
+            "subject": "errata.builds.removed",
+            "persistent": "true",
+            "who": "emusk@redhat.com",
+            "priority": "4",
+            "when": "2018-07-24 15:06:56 UTC",
+            "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>",
+            "message-id": "ID:messaging-devops-broker02.domain.com-34769-1532431903164-21:13071:0:0:1",
+            "timestamp": "0",
+            "release": "RHOSE ASYNC",
+            "JMS_AMQP_FirstAcquirer": "false",
+            "type": "errata.builds.removed",
+            "brew_build": "openstack-zaqar-container-13.0-45"
+        },
+        "msg": {
+            "product": "RHOSE",
+            "errata_id": 34983,
+            "who": "emusk@redhat.com",
+            "when": "2018-07-24 15:06:56 UTC",
+            "product_versions": [
+                "RHEL-7-OSE-3.10"
+            ],
+            "release": "RHOSE ASYNC",
+            "brew_build": "openstack-zaqar-container-13.0-45"
+        }
+    },
+    "topic": "/topic/VirtualTopic.eng.errata.builds.removed",
+    "headers": {
+        "product": "RHOSE",
+        "expires": "0",
+        "errata_id": "34983",
+        "JMS_AMQP_MESSAGE_FORMAT": "0",
+        "JMS_AMQP_NATIVE": "false",
+        "destination": "/topic/VirtualTopic.eng.errata.builds.removed",
+        "subject": "errata.builds.removed",
+        "persistent": "true",
+        "who": "emusk@redhat.com",
+        "priority": "4",
+        "when": "2018-07-24 15:06:56 UTC",
+        "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>",
+        "message-id": "ID:messaging-devops-broker02.domain.com-34769-1532431903164-21:13071:0:0:1",
+        "timestamp": "0",
+        "release": "RHOSE ASYNC",
+        "JMS_AMQP_FirstAcquirer": "false",
+        "type": "errata.builds.removed",
+        "brew_build": "openstack-zaqar-container-13.0-45"
+    }
+}

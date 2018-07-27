@@ -96,3 +96,54 @@ def test_builds_added_handler(mock_koji_cs):
 
     assert advisory.attached_builds.is_connected(build)
     assert build.owner.is_connected(owner)
+
+
+@mock.patch('koji.ClientSession')
+def test_builds_removed_handler(mock_koji_cs):
+    """Test the Errata handler when it receives a new builds removed message."""
+    mock_koji_session = mock.Mock()
+    mock_koji_session.getBuild.return_value = {
+        'completion_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'creation_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'epoch': 'epoch',
+        'extra': 'extra',
+        'id': 123456,
+        'package_name': 'openstack-zaqar-container',
+        'owner_name': 'emusk',
+        'version': '13.0',
+        'release': '45',
+        'start_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'state': 1
+    }
+    mock_koji_cs.return_value = mock_koji_session
+
+    advisory = Advisory.get_or_create({'id_': '34983'})[0]
+    build = KojiBuild.get_or_create({
+        'completion_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'creation_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'epoch': 'epoch',
+        'extra': 'extra',
+        'id_': '123456',
+        'package_name': 'openstack-zaqar-container',
+        'owner_name': 'emusk',
+        'version': '13.0',
+        'release': '45',
+        'start_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'state': 1
+    })[0]
+
+    advisory.attached_builds.connect(build)
+
+    with open(path.join(message_dir, 'errata', 'builds_removed.json'), 'r') as f:
+        msg = json.load(f)
+    # Make sure the handler can handle the message
+    assert ErrataHandler.can_handle(msg) is True
+    # Instantiate the handler
+    handler = ErrataHandler(config)
+    # Run the handler
+    handler.handle(msg)
+
+    assert advisory is not None
+    assert build is not None
+
+    assert not advisory.attached_builds.is_connected(build)
