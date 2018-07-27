@@ -1,0 +1,56 @@
+{
+    "body":{
+        "headers":{
+            "product": "RHOS", 
+            "expires": "0", 
+            "errata_id": "34983", 
+            "JMS_AMQP_MESSAGE_FORMAT": "0", 
+            "JMS_AMQP_NATIVE": "false", 
+            "destination": "/topic/VirtualTopic.eng.errata.builds.added", 
+            "subject": "errata.builds.added", 
+            "persistent": "true", 
+            "who": "emusk@redhat.com", 
+            "priority": "4", 
+            "when": "2018-07-03 13:34:14 UTC", 
+            "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>", 
+            "message-id": "ID:messaging-devops-broker01.domain.com-41274-1529619027429-2:705071:0:0:1", 
+            "timestamp": "0", 
+            "release": "OpenStack 13.0.z for RHEL 7", 
+            "JMS_AMQP_FirstAcquirer": "false", 
+            "type": "errata.builds.added", 
+            "brew_build": "openstack-zaqar-container-13.0-45"
+        },
+        "msg":{
+            "product": "RHOS", 
+            "errata_id": 34983, 
+            "who": "emusk@redhat.com", 
+            "when": "2018-07-03 13:34:14 UTC", 
+            "product_versions": [
+            "RHEL-7-OS-13"
+            ], 
+            "release": "OpenStack 13.0.z for RHEL 7", 
+            "brew_build": "openstack-zaqar-container-13.0-45"
+        }  
+    },
+    "topic":"/topic/VirtualTopic.eng.errata.builds.added",
+    "headers":{
+        "product": "RHOS", 
+        "expires": "0", 
+        "errata_id": "34983", 
+        "JMS_AMQP_MESSAGE_FORMAT": "0", 
+        "JMS_AMQP_NATIVE": "false", 
+        "destination": "/topic/VirtualTopic.eng.errata.builds.added", 
+        "subject": "errata.builds.added", 
+        "persistent": "true", 
+        "who": "emusk@redhat.com", 
+        "priority": "4", 
+        "when": "2018-07-03 13:34:14 UTC", 
+        "subscription": "/queue/Consumer.client-datanommer.openpaas-prod.VirtualTopic.eng.>", 
+        "message-id": "ID:messaging-devops-broker01.domain.com-41274-1529619027429-2:705071:0:0:1", 
+        "timestamp": "0", 
+        "release": "OpenStack 13.0.z for RHEL 7", 
+        "JMS_AMQP_FirstAcquirer": "false", 
+        "type": "errata.builds.added", 
+        "brew_build": "openstack-zaqar-container-13.0-45"
+    }
+}
