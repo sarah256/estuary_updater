@@ -2,11 +2,10 @@
 
 from __future__ import unicode_literals
 
-import neomodel
 from estuary.models.freshmaker import FreshmakerEvent
 from estuary.models.errata import Advisory
 import koji
-from estuary.models.koji import ContainerKojiBuild, KojiBuild
+from estuary.models.koji import ContainerKojiBuild
 
 from estuary_updater.handlers.base import BaseHandler
 from estuary_updater import log
@@ -122,12 +121,5 @@ class FreshmakerHandler(BaseHandler):
         else:
             log.warning('Encounted an unknown Freshmaker build state of: {0}'.format(
                 build_params['state']))
-        try:
-            build = ContainerKojiBuild.create_or_update(build_params)[0]
-        except neomodel.exceptions.ConstraintValidationFailed:
-            build = KojiBuild.nodes.get_or_none(id_=koji_build_id)
-            if not build:
-                raise
-            build.add_label(ContainerKojiBuild.__label__)
-            build = ContainerKojiBuild.get_or_create(build_params)[0]
-        return build
+
+        return ContainerKojiBuild.create_or_update(build_params)[0]
