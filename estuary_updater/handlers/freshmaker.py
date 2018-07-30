@@ -109,10 +109,9 @@ class FreshmakerHandler(BaseHandler):
             return None
         try:
             koji_task_result = self.koji_session.getTaskResult(build['build_id'])
-        except Exception as error:
-            log.warning('Failed to get the Koji task result with ID {0}'.format(build['build_id']))
-            log.exception(error)
-            return None
+        except Exception:
+            log.error('Failed to get the Koji task result with ID {0}'.format(build['build_id']))
+            raise
         koji_build_id = koji_task_result['koji_builds'][0]
         build_params = {
             'id_': koji_build_id,
