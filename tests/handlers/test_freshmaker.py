@@ -52,6 +52,8 @@ def test_event_to_building(mock_koji_cs):
     assert event.state == 1
     assert event.state_name == 'BUILDING'
     assert event.url == 'http://freshmaker.domain.com/api/1/events/2092'
+    assert event.state_reason == \
+        'Waiting for composes to finish in order to start to schedule base images for rebuild.'
 
     advisory = Advisory.nodes.get_or_none(id_='34625')
     assert advisory is not None
@@ -135,6 +137,7 @@ def test_event_to_complete(mock_koji_cs):
     assert event.url == 'http://freshmaker.domain.com/api/1/events/2194'
     assert event.state == 2
     assert event.state_name == 'COMPLETE'
+    assert event.state_reason == '2 of 3 container image(s) failed to rebuild.'
 
     build = ContainerKojiBuild.nodes.get_or_none(id_=710916)
     orig_nvr = 'e2e-container-test-product-container-7.3-210.1523551880'

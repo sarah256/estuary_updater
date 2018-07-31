@@ -77,26 +77,25 @@ class DistGitHandler(BaseHandler):
             'log_message': commit_message
         })[0]
 
-        # Look for 'Resolves', 'Related', or 'Reverts' action Bugzilla bugs
-        bugzilla_bug_pattern = re.compile(
-            r'(revert:|resolves:|related:)([rhbz#, \d]+)')
-        bugzilla_bugs = re.findall(bugzilla_bug_pattern, commit_message.lower())
-        for bugzilla_bug_group in bugzilla_bugs:
-            # Each bug group has an action, followed by a string of all of the bugs listed after
-            # that action. bug_ids is a list of each bug_id without any prefixes, such as rhbz.
-            bug_ids = re.compile(r'(\d+)')
-            bug_ids = re.findall(bug_ids, bugzilla_bug_group[1])
-            bug_action = bugzilla_bug_group[0]
-            for bug_id in bug_ids:
-                bug = BugzillaBug.get_or_create({
-                    'id_': bug_id
-                })[0]
-                if bug_action == 'resolves:':
-                    commit.resolved_bugs.connect(bug)
-                elif bug_action == 'related:':
-                    commit.related_bugs.connect(bug)
-                elif bug_action == 'reverted:':
-                    commit.reverted_bugs.connect(bug)
+        bug_rel_mapping = self.parse_bugzilla_bugs(commit_message)
+
+        for bug_id in bug_rel_mapping['resolves']:
+            bug = BugzillaBug.get_or_create({
+                'id_': bug_id
+            })[0]
+            commit.resolved_bugs.connect(bug)
+
+        for bug_id in bug_rel_mapping['related']:
+            bug = BugzillaBug.get_or_create({
+                'id_': bug_id
+            })[0]
+            commit.related_bugs.connect(bug)
+
+        for bug_id in bug_rel_mapping['reverted']:
+            bug = BugzillaBug.get_or_create({
+                'id_': bug_id
+            })[0]
+            commit.reverted_bugs.connect(bug)
 
         commit.conditional_connect(commit.author, author)
 
@@ -123,3 +122,35 @@ class DistGitHandler(BaseHandler):
             })[0]
             child.parent.connect(parent)
             parent = child
+
+    @staticmethod
+    def parse_bugzilla_bugs(commit_message):
+        """
+        Parse the Bugzilla bugs mentioned in a a dist-git commit message.
+
+        :param str commit_message: the dist-git commit message
+        :rtype: dict
+        :return: a dictionary with the keys resolves, related, reverted with
+        values as lists of Bugzilla IDs
+        """
+        # Look for 'Resolves', 'Related', or 'Reverts' action Bugzilla bugs
+        bugzilla_bug_pattern = re.compile(
+            r'(reverted:|resolves:|related:)([rhbz#, \d]+)')
+        matches = re.findall(bugzilla_bug_pattern, commit_message.lower())
+
+        # Pull out the bug id numbers without their prefixes or whitespace
+        bug_ids_pattern = re.compile(r'(\d+)')
+
+        bug_rel_mapping = {
+            'resolves': [],
+            'related': [],
+            'reverted': []
+        }
+
+        # Populate values of bug relationship type keys to their corresponding bug IDs
+        for match in matches:
+            # Remove semi-colon from relationship key
+            rel_type = match[0][:-1]
+            bug_rel_mapping[rel_type] += list(re.findall(bug_ids_pattern, match[1]))
+
+        return bug_rel_mapping

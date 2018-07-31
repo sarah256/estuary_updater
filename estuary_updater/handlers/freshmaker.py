@@ -2,11 +2,10 @@
 
 from __future__ import unicode_literals
 
-import neomodel
 from estuary.models.freshmaker import FreshmakerEvent
 from estuary.models.errata import Advisory
 import koji
-from estuary.models.koji import ContainerKojiBuild, KojiBuild
+from estuary.models.koji import ContainerKojiBuild
 
 from estuary_updater.handlers.base import BaseHandler
 from estuary_updater import log
@@ -66,6 +65,7 @@ class FreshmakerHandler(BaseHandler):
             'message_id': msg['body']['msg']['message_id'],
             'state': msg['body']['msg']['state'],
             'state_name': msg['body']['msg']['state_name'],
+            'state_reason': msg['body']['msg']['state_reason'],
             'url': msg['body']['msg']['url']
         })[0]
 
@@ -108,10 +108,9 @@ class FreshmakerHandler(BaseHandler):
             return None
         try:
             koji_task_result = self.koji_session.getTaskResult(build['build_id'])
-        except Exception as error:
-            log.warning('Failed to get the Koji task result with ID {0}'.format(build['build_id']))
-            log.exception(error)
-            return None
+        except Exception:
+            log.error('Failed to get the Koji task result with ID {0}'.format(build['build_id']))
+            raise
         koji_build_id = koji_task_result['koji_builds'][0]
         build_params = {
             'id_': koji_build_id,
@@ -122,12 +121,5 @@ class FreshmakerHandler(BaseHandler):
         else:
             log.warning('Encounted an unknown Freshmaker build state of: {0}'.format(
                 build_params['state']))
-        try:
-            build = ContainerKojiBuild.create_or_update(build_params)[0]
-        except neomodel.exceptions.ConstraintValidationFailed:
-            build = KojiBuild.nodes.get_or_none(id_=koji_build_id)
-            if not build:
-                raise
-            build.add_label(ContainerKojiBuild.__label__)
-            build = ContainerKojiBuild.get_or_create(build_params)[0]
-        return build
+
+        return ContainerKojiBuild.create_or_update(build_params)[0]
