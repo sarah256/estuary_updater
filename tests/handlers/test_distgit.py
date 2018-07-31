@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import json
 from os import path
 
+import pytest
 from estuary.models.distgit import DistGitCommit, DistGitBranch, DistGitRepo
 
 from tests import message_dir
@@ -85,3 +86,22 @@ def test_distgit_push():
     assert child is not None
 
     assert child.parent.is_connected(parent)
+
+
+@pytest.mark.parametrize('msg,related,resolves,reverted', [
+    ('Layer: Fix memleaks\n\nResolves: rhbz1534646, rhbz1484051\nRelated: #1234567, rhbz#2345678\n',
+        ['1234567', '2345678'], ['1534646', '1484051'], []),
+    ('Reverted: bug635241\nResolves: rhbz1534646, rhbz1484051\nRelated: #1234567, rhbz#2345678\n',
+        ['1234567', '2345678'], ['1534646', '1484051'], ['635241']),
+    ('Related: BZ243648, bz#2345678\n', ['243648', '2345678'], [], []),
+    ('RESOLVES: bug975310', [], ['975310'], []),
+    ('reverted: RHBZ125689', [], [], ['125689'])
+])
+def test_parse_bugzilla_bugs(msg, related, resolves, reverted):
+    """Test the Bugzilla bug parsing function."""
+    parse_bugs = DistGitHandler.parse_bugzilla_bugs(msg)
+    assert parse_bugs == {
+        'related': related,
+        'resolves': resolves,
+        'reverted': reverted
+    }
