@@ -65,8 +65,7 @@ class FreshmakerHandler(BaseHandler):
             'message_id': msg['body']['msg']['message_id'],
             'state': msg['body']['msg']['state'],
             'state_name': msg['body']['msg']['state_name'],
-            'state_reason': msg['body']['msg']['state_reason'],
-            'url': msg['body']['msg']['url']
+            'state_reason': msg['body']['msg']['state_reason']
         })[0]
 
         advisory = Advisory.get_or_create({
