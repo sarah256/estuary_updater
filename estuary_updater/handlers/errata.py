@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from estuary.models.errata import Advisory
+from estuary.models.errata import Advisory, ContainerAdvisory
 from estuary.models.bugzilla import BugzillaBug
 from estuary.models.koji import KojiBuild
 from estuary.models.user import User
@@ -10,6 +10,7 @@ from estuary.utils.general import timestamp_to_datetime
 import requests
 import requests_kerberos
 import koji
+import neomodel
 
 from estuary_updater.handlers.base import BaseHandler
 from estuary_updater import log
@@ -98,7 +99,7 @@ class ErrataHandler(BaseHandler):
 
         # TODO: The way DateTime objects are handled will need to be changed once we stop using the
         # API, as the strings are formatted differently in the message bus messages
-        advisory = {
+        advisory_params = {
             'advisory_name': msg['body']['msg']['fulladvisory'],
             'content_types': advisory_info['content_types'],
             'id_': advisory_id,
@@ -116,9 +117,28 @@ class ErrataHandler(BaseHandler):
                     estuary_key = 'status_time'
                 else:
                     estuary_key = dt
-                advisory[estuary_key] = timestamp_to_datetime(advisory_info[dt])
+                advisory_params[estuary_key] = timestamp_to_datetime(advisory_info[dt])
 
-        advisory = Advisory.create_or_update(advisory)[0]
+        if 'docker' in advisory_info['content_types']:
+            try:
+                advisory = ContainerAdvisory.create_or_update(advisory_params)[0]
+            except neomodel.exceptions.ConstraintValidationFailed:
+                # This must have errantly been created as an Advisory instead of a
+                # ContainerAdvisory, so let's fix that.
+                advisory = Advisory.nodes.get_or_none(id_=advisory_id)
+                if not advisory:
+                    # If there was a constraint validation failure and the advisory isn't just
+                    # the wrong label, then we can't recover.
+                    raise
+                advisory.add_label(ContainerAdvisory.__label__)
+                advisory = ContainerAdvisory.create_or_update(advisory_params)[0]
+        else:
+            # Check to see if a ContainerAdvisory using this id already exists, and if so remove its
+            # label because it should not be a ContainerAdvisory if docker isn't a content type.
+            container_adv = ContainerAdvisory.nodes.get_or_none(id_=advisory_id)
+            if container_adv:
+                container_adv.remove_label(ContainerAdvisory.__label__)
+            advisory = Advisory.create_or_update(advisory_params)[0]
 
         advisory.reporter.connect(reporter)
         advisory.assigned_to.connect(assigned_to)
