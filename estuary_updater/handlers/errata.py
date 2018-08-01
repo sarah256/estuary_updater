@@ -59,22 +59,54 @@ class ErrataHandler(BaseHandler):
         """
         advisory_id = msg['body']['headers']['errata_id']
 
-        url = '{0}/erratum/{1}'.format(
-            self.config['estuary_updater.errata_api_url'].rstrip('/'), advisory_id)
-        response = requests.get(url, auth=requests_kerberos.HTTPKerberosAuth())
+        erratum_url = '{0}/api/v1/erratum/{1}'.format(
+            self.config['estuary_updater.errata_url'].rstrip('/'), advisory_id)
+        response = requests.get(erratum_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
         advisory_json = response.json()
 
         advisory_type = msg['body']['headers']['type'].lower()
         advisory_info = advisory_json['errata'][advisory_type]
+
+        product_url = '{0}/products/{1}.json'.format(
+            self.config['estuary_updater.errata_url'].rstrip('/'),
+            advisory_info['product_id']
+        )
+        response = requests.get(product_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
+        product_json = response.json()
+
+        reporter_url = '{0}/api/v1/user/{1}'.format(
+            self.config['estuary_updater.errata_url'].rstrip('/'), advisory_info['reporter_id'])
+        response = requests.get(reporter_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
+        reporter_json = response.json()
+
+        reporter = User.create_or_update({
+            'username': reporter_json['login_name'].split('@')[0],
+            'email': reporter_json['email_address']
+        })[0]
+
+        assigned_to_url = '{0}/api/v1/user/{1}'.format(
+            self.config['estuary_updater.errata_url'].rstrip('/'),
+            advisory_info['assigned_to_id'])
+        response = requests.get(
+            assigned_to_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
+        assigned_to_json = response.json()
+
+        assigned_to = User.create_or_update({
+            'username': assigned_to_json['login_name'].split('@')[0],
+            'email': assigned_to_json['email_address']
+        })[0]
+
         # TODO: The way DateTime objects are handled will need to be changed once we stop using the
         # API, as the strings are formatted differently in the message bus messages
         advisory = {
             'advisory_name': msg['body']['msg']['fulladvisory'],
             'content_types': advisory_info['content_types'],
             'id_': advisory_id,
+            'product_name': product_json['product']['name'],
             'product_short_name': msg['body']['msg']['product'],
             'security_impact': advisory_info['security_impact'],
             'security_sla': advisory_info['security_sla'],
+            'state': advisory_info['status'],
             'synopsis': msg['body']['headers']['synopsis']
         }
         for dt in ('actual_ship_date', 'created_at', 'issue_date', 'release_date',
@@ -87,6 +119,9 @@ class ErrataHandler(BaseHandler):
                 advisory[estuary_key] = timestamp_to_datetime(advisory_info[dt])
 
         advisory = Advisory.create_or_update(advisory)[0]
+
+        advisory.reporter.connect(reporter)
+        advisory.assigned_to.connect(assigned_to)
 
         bugs = advisory_json['bugs']['bugs']
 

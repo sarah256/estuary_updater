@@ -135,11 +135,11 @@ class DistGitHandler(BaseHandler):
         """
         # Look for 'Resolves', 'Related', or 'Reverts' action Bugzilla bugs
         bugzilla_bug_pattern = re.compile(
-            r'(reverted:|resolves:|related:)([rhbz#, \d]+)')
-        matches = re.findall(bugzilla_bug_pattern, commit_message.lower())
+            r'^(?:(reverted|resolves|related)\: *(.+))', re.IGNORECASE | re.MULTILINE)
+        matches = re.findall(bugzilla_bug_pattern, commit_message)
 
         # Pull out the bug id numbers without their prefixes or whitespace
-        bug_ids_pattern = re.compile(r'(\d+)')
+        bug_ids_pattern = re.compile(r'(?:(?:bug|bz|rhbz)\s*#?|#)\s*(\d+)', re.IGNORECASE)
 
         bug_rel_mapping = {
             'resolves': [],
@@ -149,8 +149,7 @@ class DistGitHandler(BaseHandler):
 
         # Populate values of bug relationship type keys to their corresponding bug IDs
         for match in matches:
-            # Remove semi-colon from relationship key
-            rel_type = match[0][:-1]
+            rel_type = match[0].lower()
             bug_rel_mapping[rel_type] += list(re.findall(bug_ids_pattern, match[1]))
 
         return bug_rel_mapping
