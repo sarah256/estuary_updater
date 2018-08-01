@@ -24,6 +24,6 @@ config = {
     'stomp_ssl_key': '/etc/estuary-updater/consumer.key',
     'estuary_updater.neo4j_url': 'bolt://neo4j:neo4j@localhost:7687',
     'estuary_updater.koji_url': 'http://kojihub.domain.com/kojihub',
-    'estuary_updater.errata_api_url': 'https://errata.domain.com/api/v1/',
+    'estuary_updater.errata_url': 'https://errata.domain.com/',
     'stomp_uri': 'server:61613'
 }

@@ -1,0 +1,13 @@
+{
+    "login_name": "emusk@redhat.com",
+    "realname": "Elon Musk",
+    "organization": "Kernel Generalist - Z Stream",
+    "enabled": true,
+    "receives_mail": true,
+    "email_address": "emusk@redhat.com",
+    "roles": [
+        "devel",
+        "errata"
+    ],
+    "id": 3001096
+}

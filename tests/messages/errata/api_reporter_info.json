@@ -1,0 +1,13 @@
+{
+    "login_name": "dglover@redhat.com",
+    "realname": "Donald Glover",
+    "organization": "Kernel Generalist - Z Stream",
+    "enabled": true,
+    "receives_mail": true,
+    "email_address": "dglover@redhat.com",
+    "roles": [
+        "devel",
+        "errata"
+    ],
+    "id": 3001095
+}

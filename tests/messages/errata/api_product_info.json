@@ -1,0 +1,25 @@
+{
+    "product": {
+        "build_path": null,
+        "cdw_flag_prefix": null,
+        "default_solution_id": 2,
+        "description": "Errata Related to Red Hat Advanced Products",
+        "ftp_path": "os",
+        "ftp_subdir": "os",
+        "id": 16,
+        "is_internal": false,
+        "isactive": 1,
+        "move_bugs_on_qe": false,
+        "name": "Red Hat Enterprise Linux",
+        "path": "/mnt/redhat/beehive/updates/dist",
+        "pdc_product_id": null,
+        "short_name": "RHEL",
+        "state_machine_rule_set_id": 4,
+        "supports_pdc": false,
+        "text_only_advisories_require_dists": true,
+        "valid_bug_states": [
+            "MODIFIED",
+            "VERIFIED"
+        ]
+    }
+}

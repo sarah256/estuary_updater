@@ -21,7 +21,7 @@
     "errata": {
       "rhea": {
         "actual_ship_date": null,
-        "assigned_to_id": 3002240,
+        "assigned_to_id": 3001096,
         "batch_id": null,
         "closed": 0,
         "content_types": [
@@ -61,7 +61,7 @@
         "quality_responsibility_id": 118,
         "rating": 0,
         "release_date": null,
-        "reporter_id": 270531,
+        "reporter_id": 3001095,
         "request": 0,
         "request_rcm_push_comment_id": null,
         "resolution": "",

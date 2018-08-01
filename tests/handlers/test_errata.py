@@ -9,7 +9,6 @@ import datetime
 from estuary.models.errata import Advisory
 from estuary.models.koji import KojiBuild
 from estuary.models.user import User
-import requests
 import mock
 import pytz
 
@@ -20,14 +19,27 @@ from tests import message_dir
 
 def test_activity_status_handler():
     """Test the errata handler when it receives a new activity status message."""
-    with open(path.join(message_dir, 'errata', 'errata_api.json'), 'r') as f:
+    with open(path.join(message_dir, 'errata', 'api_errata.json'), 'r') as f:
         errata_api_msg = json.load(f)
-    url = 'https://errata.domain.com/api/v1/erratum/34661'
+    with open(path.join(message_dir, 'errata', 'api_product_info.json'), 'r') as f:
+        product_info_msg = json.load(f)
+    with open(path.join(message_dir, 'errata', 'api_reporter_info.json'), 'r') as f:
+        reporter_info_msg = json.load(f)
+    with open(path.join(message_dir, 'errata', 'api_assigned_to_info.json'), 'r') as f:
+        assigned_to_info_msg = json.load(f)
+
     with mock.patch('requests.get') as mock_get:
-        mock_response = mock.Mock()
-        mock_response.json.return_value = errata_api_msg
-        mock_get.return_value = mock_response
-        requests.get(url).json()
+        mock_response_api = mock.Mock()
+        mock_response_prod = mock.Mock()
+        mock_response_reporter = mock.Mock()
+        mock_response_assigned_to = mock.Mock()
+        mock_response_api.json.return_value = errata_api_msg
+        mock_response_prod.json.return_value = product_info_msg
+        mock_response_reporter.json.return_value = reporter_info_msg
+        mock_response_assigned_to.json.return_value = assigned_to_info_msg
+        mock_get.side_effect = [mock_response_api, mock_response_prod, mock_response_reporter,
+                                mock_response_assigned_to]
+
         with open(path.join(message_dir, 'errata', 'activity_status.json'), 'r') as f:
             msg = json.load(f)
         assert ErrataHandler.can_handle(msg) is True
@@ -36,15 +48,25 @@ def test_activity_status_handler():
         advisory = Advisory.nodes.get_or_none(id_='34661')
         assert advisory is not None
 
+        reporter = User.nodes.get_or_none(username='dglover')
+        assert reporter.email == 'dglover@redhat.com'
+        assigned_to = User.nodes.get_or_none(username='emusk')
+        assert assigned_to.email == 'emusk@redhat.com'
+
+        assert advisory.reporter.is_connected(reporter)
+        assert advisory.assigned_to.is_connected(assigned_to)
+
         assert advisory.actual_ship_date is None
         assert advisory.advisory_name == 'RHEA-2018:34661-01'
         assert advisory.content_types == ['rpm']
         assert advisory.created_at == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
         assert advisory.issue_date == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
+        assert advisory.product_name == 'Red Hat Enterprise Linux'
         assert advisory.product_short_name == 'RHEL'
         assert advisory.release_date is None
         assert advisory.security_impact == 'None'
         assert advisory.security_sla is None
+        assert advisory.state == 'QE'
         assert advisory.status_time == datetime.datetime(2018, 7, 3, 14, 15, 40, tzinfo=pytz.utc)
         assert advisory.synopsis == 'libvirt-python bug fix and enhancement update'
         assert advisory.update_date == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
