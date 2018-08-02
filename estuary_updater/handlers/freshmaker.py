@@ -106,11 +106,13 @@ class FreshmakerHandler(BaseHandler):
             log.debug('Skipping build update for event {0} because build_id is not set'.format(
                 event_id))
             return None
+
         try:
             koji_task_result = self.koji_session.getTaskResult(build['build_id'])
         except Exception:
             log.error('Failed to get the Koji task result with ID {0}'.format(build['build_id']))
             raise
+
         koji_build_id = koji_task_result['koji_builds'][0]
         build_params = {
             'id_': koji_build_id,
