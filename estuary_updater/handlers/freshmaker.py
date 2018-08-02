@@ -101,6 +101,7 @@ class FreshmakerHandler(BaseHandler):
         :return: the created/updated ContainerKojiBuild or None if it cannot be created
         :rtype: ContainerKojiBuild or None
         """
+        # build_id in Freshmaker is actually the task_id
         if not build['build_id']:
             log.debug('Skipping build update for event {0} because no build ID exists.'.format(
                 event_id))
