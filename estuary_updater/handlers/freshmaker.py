@@ -103,7 +103,7 @@ class FreshmakerHandler(BaseHandler):
         """
         # build_id in Freshmaker is actually the task_id
         if not build['build_id']:
-            log.debug('Skipping build update for event {0} because no build ID exists.'.format(
+            log.debug('Skipping build update for event {0} because build_id is not set'.format(
                 event_id))
             return None
         try:
