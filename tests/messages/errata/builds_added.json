@@ -18,7 +18,7 @@
             "release": "OpenStack 13.0.z for RHEL 7", 
             "JMS_AMQP_FirstAcquirer": "false", 
             "type": "errata.builds.added", 
-            "brew_build": "openstack-zaqar-container-13.0-45"
+            "brew_build": "e2e-container-test-product-container-7.4-36.1528968216"
         },
         "msg":{
             "product": "RHOS", 
@@ -29,7 +29,7 @@
             "RHEL-7-OS-13"
             ], 
             "release": "OpenStack 13.0.z for RHEL 7", 
-            "brew_build": "openstack-zaqar-container-13.0-45"
+            "brew_build": "e2e-container-test-product-container-7.4-36.1528968216"
         }  
     },
     "topic":"/topic/VirtualTopic.eng.errata.builds.added",
@@ -51,6 +51,6 @@
         "release": "OpenStack 13.0.z for RHEL 7", 
         "JMS_AMQP_FirstAcquirer": "false", 
         "type": "errata.builds.added", 
-        "brew_build": "openstack-zaqar-container-13.0-45"
+        "brew_build": "e2e-container-test-product-container-7.4-36.1528968216"
     }
 }

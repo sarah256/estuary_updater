@@ -18,7 +18,7 @@ from estuary_updater import config
 
 
 @mock.patch('koji.ClientSession')
-def test_event_to_building(mock_koji_cs, mock_build_one, mock_build_two, mock_build_three):
+def test_event_to_building(mock_koji_cs, mock_getBuild_one, mock_getBuild_two, mock_getBuild_three):
     """Test the Freshmaker handler when it receives an event to building message."""
     mock_koji_session = mock.Mock()
     mock_koji_session.getTaskResult.side_effect = [
@@ -32,7 +32,8 @@ def test_event_to_building(mock_koji_cs, mock_build_one, mock_build_two, mock_bu
             'koji_builds': ['234567']
         }
     ]
-    mock_koji_session.getBuild.side_effect = [mock_build_one, mock_build_two, mock_build_three]
+    mock_koji_session.getBuild.side_effect = [
+        mock_getBuild_one, mock_getBuild_two, mock_getBuild_three]
     mock_koji_cs.return_value = mock_koji_session
     # Load the message to pass to the handler
     with open(path.join(message_dir, 'freshmaker', 'event_to_building.json'), 'r') as f:
@@ -61,37 +62,46 @@ def test_event_to_building(mock_koji_cs, mock_build_one, mock_build_two, mock_bu
     assert advisory is not None
     assert event.triggered_by_advisory.is_connected(advisory)
 
-    build = ContainerKojiBuild.nodes.get_or_none(id_='710916')
-    orig_nvr = 'e2e-container-test-product-container-7.5-129'
-    assert build is not None
-    assert build.original_nvr == orig_nvr
-    assert build.name == 'e2e-container-test-product-container'
-    assert build.release == '36.1528968216'
-    assert build.version == '7.4'
-    assert event.triggered_container_builds.is_connected(build)
-    assert build.state == 0
-    build = ContainerKojiBuild.nodes.get_or_none(id_='123456')
-    orig_nvr = 'e2e-container-test-product-container-7.3-210.1523551880'
-    assert build is not None
-    assert build.original_nvr == orig_nvr
-    assert build.name == 'e2e-container-test-product-container'
-    assert build.release == '37.1528968216'
-    assert build.version == '8.4'
-    assert event.triggered_container_builds.is_connected(build)
-    assert build.state == 0
-    build = ContainerKojiBuild.nodes.get_or_none(id_='234567')
-    orig_nvr = 'e2e-container-test-product-container-7.4-36'
-    assert build is not None
-    assert build.original_nvr == orig_nvr
-    assert build.name == 'e2e-container-test-product-container'
-    assert build.release == '38.1528968216'
-    assert build.version == '9.4'
-    assert event.triggered_container_builds.is_connected(build)
-    assert build.state == 0
+    params = (
+        {
+            'id_': '710916',
+            'original_nvr': 'e2e-container-test-product-container-7.5-129',
+            'release': '36.1528968216',
+            'version': '7.4'
+        },
+        {
+            'id_': '123456',
+            'original_nvr': 'e2e-container-test-product-container-7.3-210.1523551880',
+            'release': '37.1528968216',
+            'version': '8.4'
+        },
+        {
+            'id_': '234567',
+            'original_nvr': 'e2e-container-test-product-container-7.4-36',
+            'release': '38.1528968216',
+            'version': '9.4'
+        }
+    )
+    for param in params:
+        build = ContainerKojiBuild.nodes.get_or_none(id_=param['id_'])
+        assert build is not None
+        assert build.completion_time == datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc)
+        assert build.creation_time == datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc)
+        assert build.epoch == 'epoch'
+        assert build.extra == '{"container_koji_task_id": 17511743}'
+        assert build.id_ == param['id_']
+        assert build.name == 'e2e-container-test-product-container'
+        assert build.original_nvr == param['original_nvr']
+        assert build.release == param['release']
+        assert build.version == param['version']
+        assert build.start_time == datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc)
+        assert build.state == 0
+        assert event.triggered_container_builds.is_connected(build)
 
 
 @mock.patch('koji.ClientSession')
-def test_event_to_complete(mock_koji_cs, mock_build_one, mock_build_two, mock_build_three):
+def test_event_to_complete(mock_koji_cs, mock_getBuild_one, mock_getBuild_two, mock_getBuild_three,
+                           cb_one, cb_two, cb_three):
     """Test the Freshmaker handler when it receives an event to complete message."""
     mock_koji_session = mock.Mock()
     mock_koji_session.getTaskResult.side_effect = [
@@ -105,10 +115,11 @@ def test_event_to_complete(mock_koji_cs, mock_build_one, mock_build_two, mock_bu
             'koji_builds': ['234567']
         }
     ]
-    mock_build_one['state'] = 3
-    mock_build_two['state'] = 3
-    mock_build_three['state'] = 1
-    mock_koji_session.getBuild.side_effect = [mock_build_one, mock_build_two, mock_build_three]
+    mock_getBuild_one['state'] = 3
+    mock_getBuild_two['state'] = 3
+    mock_getBuild_three['state'] = 1
+    mock_koji_session.getBuild.side_effect = [
+        mock_getBuild_one, mock_getBuild_two, mock_getBuild_three]
     mock_koji_cs.return_value = mock_koji_session
     event = FreshmakerEvent.get_or_create({
         'id_': '2194',
@@ -118,51 +129,9 @@ def test_event_to_complete(mock_koji_cs, mock_build_one, mock_build_two, mock_bu
         'message_id':
             'ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01'
     })[0]
-    ContainerKojiBuild.get_or_create({
-        'completion_time': datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc),
-        'epoch': 'epoch',
-        'extra': '{"container_koji_task_id": 17511743}',
-        'id_': '710916',
-        'name': 'e2e-container-test-product-container',
-        'package_name': 'openstack-zaqar-container',
-        'original_nvr': 'e2e-container-test-product-container-7.3-210.1523551880',
-        'owner_name': 'emusk',
-        'release': '36.1528968216',
-        'start_time': datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc),
-        'state': 3,
-        'version': '7.4'
-    })[0].triggered_by_freshmaker_event.connect(event)
-    ContainerKojiBuild.get_or_create({
-        'completion_time': datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc),
-        'epoch': 'epoch',
-        'extra': '{"container_koji_task_id": 123456}',
-        'id_': '123456',
-        'name': 'e2e-container-test-product-container',
-        'package_name': 'openstack-zaqar-container',
-        'original_nvr': 'e2e-container-test-product-container-7.3-210.1523551880',
-        'owner_name': 'emusk',
-        'release': '37.1528968216',
-        'start_time': datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc),
-        'state': 3,
-        'version': '8.4'
-    })[0].triggered_by_freshmaker_event.connect(event)
-    ContainerKojiBuild.get_or_create({
-        'completion_time': datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc),
-        'epoch': 'epoch',
-        'extra': '{"container_koji_task_id": 234567 }',
-        'id_': '234567',
-        'name': 'e2e-container-test-product-container',
-        'package_name': 'openstack-zaqar-container',
-        'original_nvr': 'e2e-container-test-product-container-7.3-210.1523551880',
-        'owner_name': 'emusk',
-        'release': '38.1528968216',
-        'start_time': datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc),
-        'state': 1,
-        'version': '9.4'
-    })[0].triggered_by_freshmaker_event.connect(event)
+    cb_one.triggered_by_freshmaker_event.connect(event)
+    cb_two.triggered_by_freshmaker_event.connect(event)
+    cb_three.triggered_by_freshmaker_event.connect(event)
     # Load the message to pass to the handler
     with open(path.join(message_dir, 'freshmaker', 'event_to_complete.json'), 'r') as f:
         msg = json.load(f)
@@ -191,12 +160,12 @@ def test_event_to_complete(mock_koji_cs, mock_build_one, mock_build_two, mock_bu
 
 
 @mock.patch('koji.ClientSession')
-def test_build_state_change(mock_koji_cs, mock_build_one):
+def test_build_state_change(mock_koji_cs, mock_getBuild_one, cb_one):
     """Test the Freshmaker handler when it receives a build state change message."""
     mock_koji_session = mock.Mock()
     mock_koji_session.getTaskResult.return_value = {'koji_builds': ['710916']}
-    mock_build_one['state'] = 1
-    mock_koji_session.getBuild.return_value = mock_build_one
+    mock_getBuild_one['state'] = 1
+    mock_koji_session.getBuild.return_value = mock_getBuild_one
     mock_koji_cs.return_value = mock_koji_session
     event = FreshmakerEvent.get_or_create({
         'id_': '2094',
@@ -205,22 +174,7 @@ def test_build_state_change(mock_koji_cs, mock_build_one):
         'event_type_id': 8,
         'message_id': 'ID:messaging.domain.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01'
     })[0]
-    build = ContainerKojiBuild.create_or_update({
-        'completion_time': datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc),
-        'epoch': 'epoch',
-        'extra': '{"container_koji_task_id": 17511743}',
-        'id_': '710916',
-        'name': 'e2e-container-test-product-container',
-        'package_name': 'openstack-zaqar-container',
-        'original_nvr': 'e2e-container-test-product-container-7.3-210.1523551880',
-        'owner_name': 'emusk',
-        'release': '36.1528968216',
-        'start_time': datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc),
-        'state': 0,
-        'version': '7.4'
-    })[0]
-    event.triggered_container_builds.connect(build)
+    event.triggered_container_builds.connect(cb_one)
     # Load the message to pass to the handler
     with open(path.join(message_dir, 'freshmaker', 'build_state_change.json'), 'r') as f:
         msg = json.load(f)
