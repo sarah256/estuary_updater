@@ -51,7 +51,6 @@ def test_event_to_building(mock_koji_cs):
         'ID:messaging.domain.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01'
     assert event.state == 1
     assert event.state_name == 'BUILDING'
-    assert event.url == 'http://freshmaker.domain.com/api/1/events/2092'
     assert event.state_reason == \
         'Waiting for composes to finish in order to start to schedule base images for rebuild.'
 
@@ -99,7 +98,6 @@ def test_event_to_complete(mock_koji_cs):
         'id_': '2194',
         'state': 1,
         'state_name': 'BUILDING',
-        'url': 'http://freshmaker.domain.com/api/1/events/2194',
         'event_type_id': 8,
         'message_id':
             'ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01'
@@ -134,7 +132,6 @@ def test_event_to_complete(mock_koji_cs):
     assert event.event_type_id == 8
     assert event.message_id == \
         'ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01'
-    assert event.url == 'http://freshmaker.domain.com/api/1/events/2194'
     assert event.state == 2
     assert event.state_name == 'COMPLETE'
     assert event.state_reason == '2 of 3 container image(s) failed to rebuild.'
@@ -173,7 +170,6 @@ def test_build_state_change(mock_koji_cs):
         'id_': '2094',
         'state': 1,
         'state_name': 'BUILDING',
-        'url': 'http://freshmaker.domain.com/api/1/events/2094',
         'event_type_id': 8,
         'message_id': 'ID:messaging.domain.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01'
     })[0]
