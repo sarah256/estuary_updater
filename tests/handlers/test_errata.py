@@ -73,22 +73,11 @@ def test_activity_status_handler():
 
 
 @mock.patch('koji.ClientSession')
-def test_builds_added_handler(mock_koji_cs):
+def test_builds_added_handler(mock_koji_cs, mock_getBuild_one):
     """Test the Errata handler when it receives a new builds added message."""
     mock_koji_session = mock.Mock()
-    mock_koji_session.getBuild.return_value = {
-        'completion_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'epoch': 'epoch',
-        'extra': 'extra',
-        'id': 123456,
-        'package_name': 'openstack-zaqar-container',
-        'owner_name': 'emusk',
-        'version': '13.0',
-        'release': '45',
-        'start_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'state': 1
-    }
+    mock_getBuild_one['state'] = 1
+    mock_koji_session.getBuild.return_value = mock_getBuild_one
     mock_koji_cs.return_value = mock_koji_session
 
     advisory = Advisory.get_or_create({'id_': '34983'})[0]
@@ -102,18 +91,18 @@ def test_builds_added_handler(mock_koji_cs):
     # Run the handler
     handler.handle(msg)
 
-    build = KojiBuild.nodes.get_or_none(id_=123456)
+    build = KojiBuild.nodes.get_or_none(id_='710916')
     owner = User.nodes.get_or_none(username='emusk')
     assert build is not None
-    assert build.name == 'openstack-zaqar-container'
-    assert build.version == '13.0'
-    assert build.release == '45'
-    assert build.completion_time == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
-    assert build.creation_time == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
+    assert build.name == 'e2e-container-test-product-container'
+    assert build.version == '7.4'
+    assert build.release == '36.1528968216'
+    assert build.completion_time == datetime.datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc)
+    assert build.creation_time == datetime.datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc)
     assert build.epoch == 'epoch'
-    assert build.extra == 'extra'
-    assert build.id_ == '123456'
-    assert build.start_time == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
+    assert build.extra == '{"container_koji_task_id": 17511743}'
+    assert build.id_ == '710916'
+    assert build.start_time == datetime.datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc)
     assert build.state == 1
 
     assert advisory.attached_builds.is_connected(build)
@@ -121,40 +110,15 @@ def test_builds_added_handler(mock_koji_cs):
 
 
 @mock.patch('koji.ClientSession')
-def test_builds_removed_handler(mock_koji_cs):
+def test_builds_removed_handler(mock_koji_cs, mock_getBuild_one, cb_one):
     """Test the Errata handler when it receives a new builds removed message."""
     mock_koji_session = mock.Mock()
-    mock_koji_session.getBuild.return_value = {
-        'completion_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'epoch': 'epoch',
-        'extra': 'extra',
-        'id': 123456,
-        'package_name': 'openstack-zaqar-container',
-        'owner_name': 'emusk',
-        'version': '13.0',
-        'release': '45',
-        'start_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'state': 1
-    }
+    mock_getBuild_one['state'] = 1
+    mock_koji_session.getBuild.return_value = mock_getBuild_one
     mock_koji_cs.return_value = mock_koji_session
 
     advisory = Advisory.get_or_create({'id_': '34983'})[0]
-    build = KojiBuild.get_or_create({
-        'completion_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'epoch': 'epoch',
-        'extra': 'extra',
-        'id_': '123456',
-        'package_name': 'openstack-zaqar-container',
-        'owner_name': 'emusk',
-        'version': '13.0',
-        'release': '45',
-        'start_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'state': 1
-    })[0]
-
-    advisory.attached_builds.connect(build)
+    advisory.attached_builds.connect(cb_one)
 
     with open(path.join(message_dir, 'errata', 'builds_removed.json'), 'r') as f:
         msg = json.load(f)
@@ -166,6 +130,4 @@ def test_builds_removed_handler(mock_koji_cs):
     handler.handle(msg)
 
     assert advisory is not None
-    assert build is not None
-
-    assert not advisory.attached_builds.is_connected(build)
+    assert not advisory.attached_builds.is_connected(cb_one)

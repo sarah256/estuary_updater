@@ -4,16 +4,13 @@ from __future__ import unicode_literals
 
 from estuary.models.errata import Advisory, ContainerAdvisory
 from estuary.models.bugzilla import BugzillaBug
-from estuary.models.koji import KojiBuild
 from estuary.models.user import User
 from estuary.utils.general import timestamp_to_datetime
 import requests
 import requests_kerberos
-import koji
 import neomodel
 
 from estuary_updater.handlers.base import BaseHandler
-from estuary_updater import log
 
 
 class ErrataHandler(BaseHandler):
@@ -149,48 +146,6 @@ class ErrataHandler(BaseHandler):
             bug = BugzillaBug.get_or_create({'id_': bug['bug']['id']})[0]
             advisory.attached_bugs.connect(bug)
 
-    def get_or_create_build(self, msg):
-        """
-        Get a Koji build from Neo4j, or create it if it does not exist in Neo4j.
-
-        :param dict msg: a message to be processed
-        :rtype: KojiBuild
-        :return: the Koji Build retrieved or created from Neo4j
-        """
-        self.koji_session = koji.ClientSession(self.config['estuary_updater.koji_url'])
-
-        nvr = msg['body']['headers']['brew_build']
-
-        try:
-            koji_build_info = self.koji_session.getBuild(nvr, strict=True)
-        except Exception:
-            log.error('Failed to get brew build with NVR {0}'.format(nvr))
-            raise
-
-        build_params = {
-            'completion_time': koji_build_info['completion_time'],
-            'creation_time': koji_build_info['creation_time'],
-            'epoch': koji_build_info['epoch'],
-            'extra': koji_build_info['extra'],
-            'id_': koji_build_info['id'],
-            'name': koji_build_info['package_name'],
-            'release': koji_build_info['release'],
-            'start_time': koji_build_info['start_time'],
-            'state': koji_build_info['state'],
-            'version': koji_build_info['version']
-        }
-
-        owner = User.create_or_update({
-            'username': koji_build_info['owner_name'],
-            'email': '{0}@redhat.com'.format(koji_build_info['owner_name'])
-        })[0]
-
-        koji_build = KojiBuild.create_or_update(build_params)[0]
-
-        koji_build.owner.connect(owner)
-
-        return koji_build
-
     def builds_added_handler(self, msg):
         """
         Handle an Errata tool builds added message and update Neo4j if necessary.
@@ -200,8 +155,8 @@ class ErrataHandler(BaseHandler):
         advisory = Advisory.get_or_create({
             'id_': msg['body']['headers']['errata_id']
         })[0]
-
-        koji_build = self.get_or_create_build(msg)
+        nvr = msg['body']['headers']['brew_build']
+        koji_build = self.get_or_create_build(nvr)
 
         advisory.attached_builds.connect(koji_build)
 
@@ -215,6 +170,7 @@ class ErrataHandler(BaseHandler):
             'id_': msg['body']['headers']['errata_id']
         })[0]
 
-        koji_build = self.get_or_create_build(msg)
+        nvr = msg['body']['headers']['brew_build']
+        koji_build = self.get_or_create_build(nvr)
 
         advisory.attached_builds.disconnect(koji_build)

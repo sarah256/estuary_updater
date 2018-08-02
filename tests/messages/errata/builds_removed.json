@@ -18,7 +18,7 @@
             "release": "RHOSE ASYNC",
             "JMS_AMQP_FirstAcquirer": "false",
             "type": "errata.builds.removed",
-            "brew_build": "openstack-zaqar-container-13.0-45"
+            "brew_build": "e2e-container-test-product-container-7.4-36.1528968216"
         },
         "msg": {
             "product": "RHOSE",
@@ -29,7 +29,7 @@
                 "RHEL-7-OSE-3.10"
             ],
             "release": "RHOSE ASYNC",
-            "brew_build": "openstack-zaqar-container-13.0-45"
+            "brew_build": "e2e-container-test-product-container-7.4-36.1528968216"
         }
     },
     "topic": "/topic/VirtualTopic.eng.errata.builds.removed",
@@ -51,6 +51,6 @@
         "release": "RHOSE ASYNC",
         "JMS_AMQP_FirstAcquirer": "false",
         "type": "errata.builds.removed",
-        "brew_build": "openstack-zaqar-container-13.0-45"
+        "brew_build": "e2e-container-test-product-container-7.4-36.1528968216"
     }
 }
