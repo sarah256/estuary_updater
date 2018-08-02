@@ -4,8 +4,6 @@ from __future__ import unicode_literals
 
 from estuary.models.freshmaker import FreshmakerEvent
 from estuary.models.errata import Advisory
-import koji
-from estuary.models.koji import ContainerKojiBuild
 
 from estuary_updater.handlers.base import BaseHandler
 from estuary_updater import log
@@ -13,13 +11,6 @@ from estuary_updater import log
 
 class FreshmakerHandler(BaseHandler):
     """A handler for Freshmaker-related messages."""
-
-    # Translates the Freshmaker build state to its equivalent in Koji
-    freshmaker_to_koji_states = {
-        0: 0,
-        1: 1,
-        2: 3
-    }
 
     @staticmethod
     def can_handle(msg):
@@ -44,7 +35,6 @@ class FreshmakerHandler(BaseHandler):
         :param dict msg: a message to be processed
         """
         topic = msg['topic']
-        self.koji_session = koji.ClientSession(self.config['estuary_updater.koji_url'])
 
         if topic == '/topic/VirtualTopic.eng.freshmaker.event.state.changed':
             self.event_state_handler(msg)
@@ -113,15 +103,9 @@ class FreshmakerHandler(BaseHandler):
             log.error('Failed to get the Koji task result with ID {0}'.format(build['build_id']))
             raise
 
-        koji_build_id = koji_task_result['koji_builds'][0]
-        build_params = {
-            'id_': koji_build_id,
-            'original_nvr': build['original_nvr']
-        }
-        if build['state'] in self.freshmaker_to_koji_states:
-            build_params['state'] = self.freshmaker_to_koji_states[build['state']]
-        else:
-            log.warning('Encounted an unknown Freshmaker build state of: {0}'.format(
-                build_params['state']))
-
-        return ContainerKojiBuild.create_or_update(build_params)[0]
+        # The ID is returned as a string so it must be cast to an int
+        koji_build_id = int(koji_task_result['koji_builds'][0])
+        # It's always going to be a container build when the build comes from Freshmaker, so we can
+        # just set force_container_label to avoid unncessary heuristic checks
+        return self.get_or_create_build(
+            koji_build_id, build['original_nvr'], force_container_label=True)

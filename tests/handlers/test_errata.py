@@ -7,7 +7,7 @@ from os import path
 import datetime
 
 from estuary.models.errata import Advisory
-from estuary.models.koji import KojiBuild
+from estuary.models.koji import KojiBuild, ContainerKojiBuild
 from estuary.models.user import User
 import mock
 import pytz
@@ -77,16 +77,17 @@ def test_builds_added_handler(mock_koji_cs):
     """Test the Errata handler when it receives a new builds added message."""
     mock_koji_session = mock.Mock()
     mock_koji_session.getBuild.return_value = {
-        'completion_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'completion_ts': 1529094398.0,
+        'creation_ts': 1529094038.0,
         'epoch': 'epoch',
-        'extra': 'extra',
+        'extra': {'container_koji_task_id': 17511743},
         'id': 123456,
+        'name': 'openstack-zaqar-container',
         'package_name': 'openstack-zaqar-container',
         'owner_name': 'emusk',
         'version': '13.0',
         'release': '45',
-        'start_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'start_ts': 1529094098.0,
         'state': 1
     }
     mock_koji_cs.return_value = mock_koji_session
@@ -108,12 +109,12 @@ def test_builds_added_handler(mock_koji_cs):
     assert build.name == 'openstack-zaqar-container'
     assert build.version == '13.0'
     assert build.release == '45'
-    assert build.completion_time == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
-    assert build.creation_time == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
+    assert build.completion_time == datetime.datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc)
+    assert build.creation_time == datetime.datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc)
     assert build.epoch == 'epoch'
-    assert build.extra == 'extra'
+    assert build.extra == '{"container_koji_task_id": 17511743}'
     assert build.id_ == '123456'
-    assert build.start_time == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
+    assert build.start_time == datetime.datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc)
     assert build.state == 1
 
     assert advisory.attached_builds.is_connected(build)
@@ -125,32 +126,34 @@ def test_builds_removed_handler(mock_koji_cs):
     """Test the Errata handler when it receives a new builds removed message."""
     mock_koji_session = mock.Mock()
     mock_koji_session.getBuild.return_value = {
-        'completion_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'completion_ts': 1529094398.0,
+        'creation_ts': 1529094038.0,
         'epoch': 'epoch',
-        'extra': 'extra',
+        'extra': {'container_koji_task_id': 17511743},
         'id': 123456,
+        'name': 'openstack-zaqar-container',
         'package_name': 'openstack-zaqar-container',
         'owner_name': 'emusk',
         'version': '13.0',
         'release': '45',
-        'start_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'start_ts': 1529094098.0,
         'state': 1
     }
     mock_koji_cs.return_value = mock_koji_session
 
     advisory = Advisory.get_or_create({'id_': '34983'})[0]
-    build = KojiBuild.get_or_create({
-        'completion_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
-        'creation_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+    build = ContainerKojiBuild.get_or_create({
+        'completion_time': datetime.datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc),
+        'creation_time': datetime.datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc),
         'epoch': 'epoch',
-        'extra': 'extra',
+        'extra': '{"container_koji_task_id": 17511743}',
         'id_': '123456',
+        'name': 'openstack-zaqar-container',
         'package_name': 'openstack-zaqar-container',
         'owner_name': 'emusk',
         'version': '13.0',
         'release': '45',
-        'start_time': datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc),
+        'start_time': datetime.datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc),
         'state': 1
     })[0]
 

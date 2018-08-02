@@ -30,3 +30,60 @@ def consumer():
         config = {}
 
     return EstuaryUpdater(FakeHub())
+
+
+@pytest.fixture
+def mock_build_one():
+    """Return a mock build in the format of koji.ClientSession.getBuild."""
+    return {
+        'completion_ts': 1529094398.0,
+        'creation_ts': 1529094038.0,
+        'epoch': 'epoch',
+        'extra': {'container_koji_task_id': 17511743},
+        'id': 710916,
+        'name': 'e2e-container-test-product-container',
+        'package_name': 'e2e-container-test-product-container',
+        'owner_name': 'emusk',
+        'release': '36.1528968216',
+        'version': '7.4',
+        'start_ts': 1529094098.0,
+        'state': 0
+    }
+
+
+@pytest.fixture
+def mock_build_two():
+    """Return a mock build in the format of koji.ClientSession.getBuild."""
+    return {
+        'completion_ts': 1529094398.0,
+        'creation_ts': 1529094038.0,
+        'epoch': 'epoch',
+        'extra': {'container_koji_task_id': 17511743},
+        'id': 123456,
+        'name': 'e2e-container-test-product-container',
+        'package_name': 'e2e-container-test-product-container',
+        'owner_name': 'emusk',
+        'release': '37.1528968216',
+        'version': '8.4',
+        'start_ts': 1529094098.0,
+        'state': 0
+    }
+
+
+@pytest.fixture
+def mock_build_three():
+    """Return a mock build in the format of koji.ClientSession.getBuild."""
+    return {
+        'completion_ts': 1529094398.0,
+        'creation_ts': 1529094038.0,
+        'epoch': 'epoch',
+        'extra': {'container_koji_task_id': 17511743},
+        'id': 234567,
+        'name': 'e2e-container-test-product-container',
+        'package_name': 'e2e-container-test-product-container',
+        'owner_name': 'emusk',
+        'release': '38.1528968216',
+        'version': '9.4',
+        'start_ts': 1529094098.0,
+        'state': 0
+    }
