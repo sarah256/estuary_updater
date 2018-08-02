@@ -96,7 +96,7 @@ class FreshmakerHandler(BaseHandler):
         """
         Use the Koji Task Result to create or update a ContainerKojiBuild.
 
-        :param dict build: the build being created or updated
+        :param dict build: the build represented in Freshmaker being created or updated
         :param int event_id: the id of the Freshmaker event
         :return: the created/updated ContainerKojiBuild or None if it cannot be created
         :rtype: ContainerKojiBuild or None
