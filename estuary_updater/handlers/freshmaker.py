@@ -50,7 +50,7 @@ class FreshmakerHandler(BaseHandler):
         :param dict msg: a message to be processed
         """
         event = FreshmakerEvent.create_or_update({
-            'id_': msg['body']['msg']['id'],
+            'id_': str(msg['body']['msg']['id']),
             'event_type_id': msg['body']['msg']['event_type_id'],
             'message_id': msg['body']['msg']['message_id'],
             'state': msg['body']['msg']['state'],
@@ -64,23 +64,21 @@ class FreshmakerHandler(BaseHandler):
 
         event.conditional_connect(event.triggered_by_advisory, advisory)
 
-        builds = msg['body']['msg']['builds']
-        event_id = msg['body']['msg']['id']
-
-        for build in builds:
-            koji_build = self.create_or_update_build(build, event_id)
-            if koji_build:
-                event.triggered_container_builds.connect(koji_build)
-
     def build_state_handler(self, msg):
         """
         Handle a Freshmaker build state changed message and update Neo4j if necessary.
 
         :param dict msg: a message to be processed
         """
-        build = msg['body']['msg']
+        build_info = msg['body']['msg']
         event_id = msg['body']['msg']['id']
-        self.create_or_update_build(build, event_id)
+        build = self.create_or_update_build(build_info, event_id)
+        if build:
+            event = FreshmakerEvent.nodes.get_or_none(id_=str(event_id))
+            if event:
+                event.triggered_container_builds.connect(build)
+            else:
+                log.warn('The Freshmaker event {0} does not exist in Neo4j'.format(event_id))
 
     def create_or_update_build(self, build, event_id):
         """
@@ -91,8 +89,13 @@ class FreshmakerHandler(BaseHandler):
         :return: the created/updated ContainerKojiBuild or None if it cannot be created
         :rtype: ContainerKojiBuild or None
         """
+        # Builds in Koji only exist when the Koji task this Freshmaker build represents completes
+        if build['state'] != 1:
+            log.debug('Skipping build update for event {0} because the build is not complete yet'
+                      .format(event_id))
+            return None
         # build_id in Freshmaker is actually the task_id
-        if not build['build_id']:
+        elif not build['build_id']:
             log.debug('Skipping build update for event {0} because build_id is not set'.format(
                 event_id))
             return None
@@ -103,6 +106,10 @@ class FreshmakerHandler(BaseHandler):
             log.error('Failed to get the Koji task result with ID {0}'.format(build['build_id']))
             raise
 
+        if not koji_task_result.get('koji_builds'):
+            log.warn('The task result of {0} does not contain the koji_builds key'.format(
+                build['build_id']))
+            return None
         # The ID is returned as a string so it must be cast to an int
         koji_build_id = int(koji_task_result['koji_builds'][0])
         # It's always going to be a container build when the build comes from Freshmaker, so we can
