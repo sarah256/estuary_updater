@@ -16,10 +16,10 @@
             "build_id": 16735050, 
             "state_reason": "Built successfully.", 
             "time_completed": "2018-06-14T23:50:37Z", 
-            "name": "logging-kibana-container", 
+            "name": "e2e-container-test-product-container", 
             "time_submitted": "2018-06-14T20:26:06Z", 
             "event_id": 2094, 
-            "original_nvr": "logging-kibana-container-v3.9.30-3", 
+            "original_nvr": "e2e-container-test-product-container-7.5-133", 
             "type_name": "IMAGE", 
             "state_name": "DONE", 
             "url": "http://freshmaker.domain.com/api/1/builds/1260", 
@@ -34,7 +34,7 @@
             "dep_on": "rh-nodejs6-docker", 
             "type": 1, 
             "id": 1260, 
-            "rebuilt_nvr": "logging-kibana-container-v3.9.30-3.1529007966"
+            "rebuilt_nvr": "e2e-container-test-product-container-7.4-36.1528968216"
         }
     },
     "topic":"/topic/VirtualTopic.eng.freshmaker.build.state.changed",
