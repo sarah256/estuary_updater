@@ -1,0 +1,78 @@
+{
+    "body":{
+        "headers":{
+            "content-length": "864", 
+            "expires": "0", 
+            "old": "BUILDING", 
+            "JMS_AMQP_MESSAGE_FORMAT": "0", 
+            "timestamp": "0", 
+            "JMS_AMQP_NATIVE": "false", 
+            "destination": "/topic/VirtualTopic.eng.brew.build.complete", 
+            "priority": "4", 
+            "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+            "message-id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-41951-1532471159894-4:793878:0:0:1", 
+            "version": "17.4.0", 
+            "attribute": "state", 
+            "release": "8.el8+1325+72a36e76", 
+            "new": "COMPLETE", 
+            "JMS_AMQP_FirstAcquirer": "false", 
+            "type": "BuildStateChange", 
+            "name": "python-attrs"
+        },
+        "msg":{
+            "info": {
+                "package_name": "python-attrs", 
+                "extra": {
+                  "source": {
+                    "original_url": "git://pkgs.devel.redhat.com/rpms/python-attrs?#3be3cb33e6432d8392ac3d9e6edffd990f618432"
+                  }
+                }, 
+                "creation_time": "2018-08-03 17:49:42.735506", 
+                "completion_time": null, 
+                "package_id": 63243, 
+                "id": 736244, 
+                "build_id": 736244, 
+                "state": 0, 
+                "source": "git://pkgs.devel.redhat.com/rpms/python-attrs#3be3cb33e6432d8392ac3d9e6edffd990f618432", 
+                "epoch": null, 
+                "version": "17.4.0", 
+                "completion_ts": null, 
+                "owner_id": 4066, 
+                "owner_name": "mbs", 
+                "nvr": "python-attrs-17.4.0-8.el8+1325+72a36e76", 
+                "start_time": "2018-08-03 17:49:42.735506", 
+                "creation_event_id": 20904353, 
+                "start_ts": 1533318582.73551, 
+                "volume_id": 0, 
+                "creation_ts": 1533318582.73551, 
+                "name": "python-attrs", 
+                "task_id": 17582755, 
+                "volume_name": "DEFAULT", 
+                "release": "8.el8+1325+72a36e76"
+            }, 
+            "attribute": "state", 
+            "old": 0, 
+            "new": 1
+        }  
+    },
+    "topic":"/topic/VirtualTopic.eng.brew.build.complete",
+    "headers":{
+        "content-length": "864", 
+        "expires": "0", 
+        "old": "BUILDING", 
+        "JMS_AMQP_MESSAGE_FORMAT": "0", 
+        "timestamp": "0", 
+        "JMS_AMQP_NATIVE": "false", 
+        "destination": "/topic/VirtualTopic.eng.brew.build.complete", 
+        "priority": "4", 
+        "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+        "message-id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-41951-1532471159894-4:793878:0:0:1", 
+        "version": "17.4.0", 
+        "attribute": "state", 
+        "release": "8.el8+1325+72a36e76", 
+        "new": "COMPLETE", 
+        "JMS_AMQP_FirstAcquirer": "false", 
+        "type": "BuildStateChange", 
+        "name": "python-attrs"
+    }
+}

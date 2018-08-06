@@ -1,0 +1,93 @@
+{
+    "body":{
+        "headers":{
+            "content-length": "1273", 
+            "destination": "/topic/VirtualTopic.eng.brew.build.untag", 
+            "JMS_AMQP_MESSAGE_FORMAT": "0", 
+            "JMS_AMQP_NATIVE": "false", 
+            "expires": "0", 
+            "tag": "rhos-13.0-rhel-7-pending", 
+            "priority": "4", 
+            "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+            "message-id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-44167-1533567716468-4:3791:0:0:1", 
+            "user": "rcm/build", 
+            "version": "8.0.4", 
+            "timestamp": "0", 
+            "release": "11.el7ost", 
+            "JMS_AMQP_FirstAcquirer": "false", 
+            "type": "Untag", 
+            "name": "openstack-tripleo-heat-templates"
+        },
+        "msg":{
+            "strict": true, 
+            "tag": {
+              "maven_support": false, 
+              "locked": false, 
+              "name": "rhos-13.0-rhel-7-pending", 
+              "extra": {}, 
+              "perm": null, 
+              "perm_id": null, 
+              "arches": null, 
+              "maven_include_all": false, 
+              "id": 15638
+            }, 
+            "force": false, 
+            "build": {
+              "package_name": "openstack-tripleo-heat-templates", 
+              "extra": {
+                "source": {
+                  "original_url": "git://pkgs.devel.redhat.com/rpms/openstack-tripleo-heat-templates?#3fcaf715e349336c0b2062fe7b1fa4369c12852f"
+                }
+              }, 
+              "creation_time": "2018-08-06 08:26:22.378117", 
+              "completion_time": "2018-08-06 08:30:13.865342", 
+              "package_id": 48664, 
+              "id": 739457, 
+              "build_id": 739457, 
+              "state": 1, 
+              "source": "git://pkgs.devel.redhat.com/rpms/openstack-tripleo-heat-templates#3fcaf715e349336c0b2062fe7b1fa4369c12852f", 
+              "epoch": null, 
+              "version": "8.0.4", 
+              "completion_ts": 1533544213.86534, 
+              "owner_id": 1922, 
+              "owner_name": "mbaldess", 
+              "nvr": "openstack-tripleo-heat-templates-8.0.4-11.el7ost", 
+              "start_time": "2018-08-06 08:26:22.378117", 
+              "creation_event_id": 20944220, 
+              "start_ts": 1533543982.37812, 
+              "volume_id": 0, 
+              "creation_ts": 1533543982.37812, 
+              "name": "openstack-tripleo-heat-templates", 
+              "task_id": 17620334, 
+              "volume_name": "DEFAULT", 
+              "release": "11.el7ost"
+            }, 
+            "user": {
+              "status": 0, 
+              "krb_principal": "rcm/build@REDHAT.COM", 
+              "usertype": 0, 
+              "id": 3545, 
+              "name": "rcm/build"
+            }
+        }  
+    },
+    "topic":"/topic/VirtualTopic.eng.brew.build.untag",
+    "headers":{
+        "content-length": "1273", 
+        "destination": "/topic/VirtualTopic.eng.brew.build.untag", 
+        "JMS_AMQP_MESSAGE_FORMAT": "0", 
+        "JMS_AMQP_NATIVE": "false", 
+        "expires": "0", 
+        "tag": "rhos-13.0-rhel-7-pending", 
+        "priority": "4", 
+        "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+        "message-id": "ID:messaging-devops-broker01.web.prod.ext.phx2.redhat.com-44167-1533567716468-4:3791:0:0:1", 
+        "user": "rcm/build", 
+        "version": "8.0.4", 
+        "timestamp": "0", 
+        "release": "11.el7ost", 
+        "JMS_AMQP_FirstAcquirer": "false", 
+        "type": "Untag", 
+        "name": "openstack-tripleo-heat-templates"
+    }
+}
