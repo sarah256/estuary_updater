@@ -1,12 +1,11 @@
 # SPDX-License-Identifier: GPL-3.0+
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, absolute_import
 
 import re
 
 from estuary.models.koji import KojiBuild, KojiTag
 from estuary.models.distgit import DistGitCommit
-
 
 from estuary_updater.handlers.base import BaseHandler
 

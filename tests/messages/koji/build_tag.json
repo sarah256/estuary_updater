@@ -22,7 +22,7 @@
             "tag": {
                 "maven_support": false, 
                 "locked": false, 
-                "name": "module-python27-private-lbalhar-testing-20180803150645-a97f29a0-build", 
+                "name": "rhos-13.0-rhel-7-pending", 
                 "extra": {
                   "mock.package_manager": "dnf", 
                   "repo_include_all": true
@@ -31,7 +31,7 @@
                 "perm_id": 1, 
                 "arches": "x86_64 i686 ppc64le aarch64 s390x", 
                 "maven_include_all": false, 
-                "id": 16413
+                "id": 15638
               }, 
               "force": false, 
               "build": {
@@ -44,11 +44,11 @@
                 "build_id": 736088, 
                 "state": 1, 
                 "source": null, 
-                "epoch": null, 
+                "epoch": "epoch", 
                 "version": "0.1", 
                 "completion_ts": 1533309215.32968, 
                 "owner_id": 4066, 
-                "owner_name": "mbs", 
+                "owner_name": "emusk", 
                 "nvr": "module-build-macros-0.1-1.el8+1318+37d5dc6c", 
                 "start_time": "2018-08-03 15:09:40.755122", 
                 "creation_event_id": 20895062, 
@@ -62,7 +62,7 @@
               }, 
               "user": {
                 "status": 0, 
-                "krb_principal": "mbs/mbs-backend.host.prod.eng.bos.redhat.com@REDHAT.COM", 
+                "krb_principal": "mbs/mbs-backend.domain.com@REDHAT.COM", 
                 "usertype": 0, 
                 "id": 4066, 
                 "name": "mbs"

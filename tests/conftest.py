@@ -6,7 +6,7 @@ from datetime import datetime
 
 import pytest
 from neomodel import config as neomodel_config, db as neo4j_db
-from estuary.models.koji import ContainerKojiBuild
+from estuary.models.koji import KojiBuild, ContainerKojiBuild, KojiTag
 import pytz
 import koji
 
@@ -56,6 +56,26 @@ def mock_getBuild_one():
 
 
 @pytest.fixture
+def mock_getBuild_two():
+    """Return a mock build in the format of koji.ClientSession.getBuild."""
+    return {
+        'completion_ts': 1529094398.0,
+        'creation_ts': 1533318582.73551,
+        'epoch': None,
+        'extra': {"source": {"original_url": "git://pkgs.domain.com/rpms/python-attrs?#3be3cb33e64"
+                                             "32d8392ac3d9e6edffd990f618432"}},
+        'id': 736244,
+        'name': 'python-attrs',
+        'package_name': 'python-attrs',
+        'owner_name': 'emusk',
+        'release': '8.el8+1325+72a36e76',
+        'version': '17.4.0',
+        'start_ts': 1533318582.73551,
+        'state': koji.BUILD_STATES['COMPLETE']
+    }
+
+
+@pytest.fixture
 def cb_one():
     """Return a KojiContainerBuild matching mock_getBuild_one."""
     return ContainerKojiBuild.get_or_create({
@@ -72,4 +92,29 @@ def cb_one():
         'start_time': datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc),
         'state': 3,
         'version': '7.4'
+    })[0]
+
+
+@pytest.fixture
+def kb_one():
+    """Return a KojiBuild."""
+    return KojiBuild.get_or_create({
+        'completion_time': datetime(2018, 8, 3, 15, 13, 35, tzinfo=pytz.utc),
+        'creation_time': datetime(2018, 8, 3, 15, 9, 40, tzinfo=pytz.utc),
+        'id_': '736088',
+        'name': 'module-build-macros',
+        'owner_name': 'emusk',
+        'release': '1.el8+1318+37d5dc6c',
+        'start_time': datetime(2018, 8, 3, 15, 9, 40, tzinfo=pytz.utc),
+        'state': 1,
+        'version': '0.1'
+    })[0]
+
+
+@pytest.fixture
+def koji_tag():
+    """Return a KojiTag."""
+    return KojiTag.get_or_create({
+        'id_': '15638',
+        'name': 'rhos-13.0-rhel-7-pending'
     })[0]
