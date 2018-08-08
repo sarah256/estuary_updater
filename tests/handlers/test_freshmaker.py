@@ -42,6 +42,7 @@ def test_event_to_building():
 
     advisory = Advisory.nodes.get_or_none(id_='34625')
     assert advisory is not None
+    assert advisory.advisory_name == 'RHBA-8018:0593-01'
     assert event.triggered_by_advisory.is_connected(advisory)
     # No container builds should be attached since the builds in Koji only exist after the
     # build task Freshmaker tracks is complete
