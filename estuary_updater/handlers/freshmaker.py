@@ -49,17 +49,24 @@ class FreshmakerHandler(BaseHandler):
 
         :param dict msg: a message to be processed
         """
+        msg_id = msg['body']['msg']['message_id']
         event = FreshmakerEvent.create_or_update({
             'id_': str(msg['body']['msg']['id']),
             'event_type_id': msg['body']['msg']['event_type_id'],
-            'message_id': msg['body']['msg']['message_id'],
+            'message_id': msg_id,
             'state': msg['body']['msg']['state'],
             'state_name': msg['body']['msg']['state_name'],
             'state_reason': msg['body']['msg']['state_reason']
         })[0]
 
+        advisory_name = msg_id.rsplit('.', 1)[-1]
+        if advisory_name[0:4] not in ('RHSA', 'RHBA', 'RHEA'):
+            log.warn('Unable to parse the advisory name from the Freshmaker message_id: {0}'
+                     .format(msg_id))
+            advisory_name = None
         advisory = Advisory.get_or_create({
-            'id_': msg['body']['msg']['search_key']
+            'id_': msg['body']['msg']['search_key'],
+            'advisory_name': advisory_name
         })[0]
 
         event.conditional_connect(event.triggered_by_advisory, advisory)
