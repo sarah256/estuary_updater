@@ -51,6 +51,10 @@ def test_event_to_building():
 
 def test_event_to_complete(cb_one):
     """Test the Freshmaker handler when it receives an event to complete message."""
+    advisory = Advisory.get_or_create({
+        'id_': '34727',
+        'advisory_name': 'RHBA-8018:0600-01'
+    })[0]
     event = FreshmakerEvent.get_or_create({
         'id_': '2194',
         'state': 1,
@@ -60,6 +64,7 @@ def test_event_to_complete(cb_one):
             'ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01'
     })[0]
     event.triggered_container_builds.connect(cb_one)
+    event.triggered_by_advisory.connect(advisory)
     # Load the message to pass to the handler
     with open(path.join(message_dir, 'freshmaker', 'event_to_complete.json'), 'r') as f:
         msg = json.load(f)
