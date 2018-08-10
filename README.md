@@ -64,7 +64,7 @@ Get a node from Neo4j.
     ```python
     # SPDX-License-Identifier: GPL-3.0+
 
-    from __future__ import unicode_literals
+    from __future__ import unicode_literals, absolute_import
 
     from estuary_updater.handlers.base import BaseHandler
     ```
@@ -111,7 +111,7 @@ Get a node from Neo4j.
     ```python
     # SPDX-License-Identifier: GPL-3.0+
 
-    from __future__ import unicode_literals
+    from __future__ import unicode_literals, absolute_import
 
     import json
     from os import path
