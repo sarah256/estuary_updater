@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0+
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, absolute_import
 
 import fedmsg.consumers
 

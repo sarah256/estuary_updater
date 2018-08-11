@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0+
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, absolute_import
 
 from estuary.models.errata import Advisory, ContainerAdvisory
 from estuary.models.bugzilla import BugzillaBug
