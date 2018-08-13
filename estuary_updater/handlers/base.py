@@ -76,15 +76,14 @@ class BaseHandler(object):
         :rtype: bool
         """
         package_name = build_info['package_name']
-        # Checking a heuristic for determining if a build is a container build since, currently
+        # Checking heuristics for determining if a build is a container build, since currently
         # there is no definitive way to do it.
         if build_info['extra'] and (
                 build_info['extra'].get('container_koji_build_id') or
                 build_info['extra'].get('container_koji_task_id')):
             return True
-        # Checking another heuristic for determining if a build is a container build since
-        # currently there is no definitive way to do it.
-        elif (package_name.endswith('-container') or package_name.endswith('-docker')):
+        elif build_info['extra'].get('image') and\
+                (package_name.endswith('-container') or package_name.endswith('-docker')):
             return True
         else:
             return False
