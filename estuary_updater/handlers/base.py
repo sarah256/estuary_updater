@@ -100,30 +100,34 @@ class BaseHandler(object):
         :return: the Koji Build retrieved or created from Neo4j
         """
         try:
-            koji_build_info = self.koji_session.getBuild(identifier, strict=True)
+            build_info = self.koji_session.getBuild(identifier, strict=True)
         except Exception:
             log.error('Failed to get brew build using the identifier {0}'.format(identifier))
             raise
 
         build_params = {
-            'completion_time': datetime.fromtimestamp(int(koji_build_info['completion_ts'])),
-            'creation_time': datetime.fromtimestamp(int(koji_build_info['creation_ts'])),
-            'epoch': koji_build_info['epoch'],
-            'extra': json.dumps(koji_build_info['extra']),
-            'id_': str(koji_build_info['id']),
-            'name': koji_build_info['package_name'],
-            'release': koji_build_info['release'],
-            'start_time': datetime.fromtimestamp(int(koji_build_info['start_ts'])),
-            'state': koji_build_info['state'],
-            'version': koji_build_info['version']
+            'epoch': build_info['epoch'],
+            'extra': json.dumps(build_info['extra']),
+            'id_': str(build_info['id']),
+            'name': build_info['package_name'],
+            'release': build_info['release'],
+            'state': build_info['state'],
+            'version': build_info['version']
         }
 
+        # To handle the case when a message has a null timestamp
+        for ts in ('completion_ts', 'creation_ts', 'start_ts'):
+            # Remove last 2 characters and append 'time' to get key in build_params
+            dict_key = ts[:-2] + 'time'
+            if build_info[ts]:
+                build_params[dict_key] = datetime.fromtimestamp(int(build_info[ts]))
+
         owner = User.create_or_update({
-            'username': koji_build_info['owner_name'],
-            'email': '{0}@redhat.com'.format(koji_build_info['owner_name'])
+            'username': build_info['owner_name'],
+            'email': '{0}@redhat.com'.format(build_info['owner_name'])
         })[0]
 
-        if force_container_label or self.is_container_build(koji_build_info):
+        if force_container_label or self.is_container_build(build_info):
             if original_nvr:
                 build_params['original_nvr'] = original_nvr
             koji_build = ContainerKojiBuild.create_or_update(build_params)[0]
