@@ -1,6 +1,7 @@
 FROM fedora:28
 LABEL maintainer="Factory 2.0"
 
+ENV KRB5_CLIENT_KTNAME /etc/estuary-updater/estuary-updater.keytab
 WORKDIR /src
 RUN dnf -y install \
   --setopt=deltarpm=0 \
@@ -33,7 +34,7 @@ RUN pip3 install . --no-deps
 # Remove the default fedmsg config files
 RUN rm -f /etc/fedmsg.d/* && rm -rf ./fedmsg.d
 
-# consumer.crt and consumer.key must be in this volume at runtime
+# consumer.crt, consumer.key, and estuary-updater.keytab must be in this volume at runtime
 VOLUME "/etc/estuary-updater"
 # The fedmsg configuration files must be in this volume at runtime
 VOLUME "/etc/fedmsg.d"
