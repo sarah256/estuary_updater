@@ -18,7 +18,11 @@ config = {
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.freshmaker.event.state.changed',  # noqa: E501
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.freshmaker.build.state.changed',  # noqa: E501
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.distgit.commit',
-        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.errata.activity.status'
+        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.errata.activity.status',
+        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.complete',
+        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.tag',
+        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.untag'
+
     ],
     'stomp_ssl_crt': '/etc/estuary-updater/consumer.crt',
     'stomp_ssl_key': '/etc/estuary-updater/consumer.key',
