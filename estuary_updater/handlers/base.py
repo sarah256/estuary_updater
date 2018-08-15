@@ -134,6 +134,6 @@ class BaseHandler(object):
         else:
             koji_build = KojiBuild.create_or_update(build_params)[0]
 
-        koji_build.owner.connect(owner)
+        koji_build.conditional_connect(koji_build.owner, owner)
 
         return koji_build
