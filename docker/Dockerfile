@@ -8,6 +8,7 @@ RUN dnf -y install \
   --setopt=install_weak_deps=false \
   --setopt=tsflags=nodocs \
   bash \
+  krb5-workstation \
   python3-devel \
   # Install the RPM dependencies for both estuary-api and estuary-updater
   python3-fedmsg \
@@ -25,6 +26,8 @@ RUN dnf -y install \
 RUN pip3 install https://github.com/release-engineering/estuary-api/tarball/master#egg=estuary  --no-deps
 # This will allow a non-root user to install a custom root CA at run-time
 RUN chmod 777 /etc/pki/tls/certs/ca-bundle.crt
+# This resolves the "Invalid UID in persistent keyring name while getting default ccache" error
+RUN sed -i '/default_ccache_name = KEYRING:persistent:%{uid}/d' /etc/krb5.conf
 COPY . .
 # We install the python3-koji RPM but it doesn't register as installed according to setuptools.
 # This hack keeps the application from raising a pkg_resources.DistributionNotFound exception.
