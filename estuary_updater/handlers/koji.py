@@ -70,12 +70,14 @@ class KojiHandler(BaseHandler):
 
         :param dict msg: a message to be processed
         """
+        build = KojiBuild.nodes.get_or_none(id_=msg['body']['msg']['build']['id'])
+        # Check to see if we want to process this tag
+        if not build:
+            return
         tag = KojiTag.create_or_update({
             'id_': msg['body']['msg']['tag']['id'],
             'name': msg['body']['msg']['tag']['name']
         })[0]
-
-        build = KojiBuild.get_or_create({'id_': msg['body']['msg']['build']['id']})[0]
 
         if msg['topic'] == '/topic/VirtualTopic.eng.brew.build.tag':
             tag.builds.connect(build)
