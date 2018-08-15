@@ -137,8 +137,8 @@ class ErrataHandler(BaseHandler):
                 container_adv.remove_label(ContainerAdvisory.__label__)
             advisory = Advisory.create_or_update(advisory_params)[0]
 
-        advisory.reporter.connect(reporter)
-        advisory.assigned_to.connect(assigned_to)
+        advisory.conditional_connect(advisory.reporter, reporter)
+        advisory.conditional_connect(advisory.assigned_to, assigned_to)
 
         bugs = advisory_json['bugs']['bugs']
 
