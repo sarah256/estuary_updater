@@ -47,6 +47,7 @@
             "name": "Elon Musk",
             "rev": "2cc7f45c8aae163feed162478622f5f9165c8e78",
             "namespace": "rpms",
+            "commit_date": "2018-08-16 13:45:20",
             "agent": "emusk",
             "summary": "MozNSS Compat. Layer: Fix memleaks reported by valgrind",
             "repo": "openldap",
@@ -54,6 +55,7 @@
             "seen": false,
             "path": "/srv/git/rpms/openldap.git",
             "message": "Layer: Fix memleaks\n\nResolves: rhbz1534646, rhbz1484051\nRelated: #1234567, rhbz#2345678\n",
+            "author_date": "2018-08-16 13:45:20",
             "email": "emusk@redhat.com"
         }  
     },
