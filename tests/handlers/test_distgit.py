@@ -4,9 +4,11 @@ from __future__ import unicode_literals, absolute_import
 
 import json
 from os import path
+import datetime
 
 import pytest
 from estuary.models.distgit import DistGitCommit, DistGitBranch, DistGitRepo
+import pytz
 
 from tests import message_dir
 from estuary_updater.handlers.distgit import DistGitHandler
@@ -32,6 +34,8 @@ def test_distgit_commit():
     log_msg = ('Layer: Fix memleaks\n\nResolves: rhbz1534646, rhbz1484051\nRelated: #1234567, '
                'rhbz#2345678\n')
     assert commit.log_message == log_msg
+    assert commit.author_date == datetime.datetime(2018, 8, 16, 13, 45, 20, tzinfo=pytz.utc)
+    assert commit.commit_date == datetime.datetime(2018, 8, 16, 13, 45, 20, tzinfo=pytz.utc)
     assert commit.author.get().username == 'emusk'
     assert commit.author.get().email == 'emusk@redhat.com'
     assert commit.branches[0].name == 'rhel-7.6'

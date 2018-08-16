@@ -7,6 +7,7 @@ import re
 from estuary.models.distgit import DistGitRepo, DistGitBranch, DistGitCommit
 from estuary.models.bugzilla import BugzillaBug
 from estuary.models.user import User
+from estuary.utils.general import timestamp_to_datetime
 
 from estuary_updater.handlers.base import BaseHandler
 
@@ -74,7 +75,9 @@ class DistGitHandler(BaseHandler):
         commit_message = msg['body']['msg']['message']
         commit = DistGitCommit.create_or_update({
             'hash_': msg['headers']['rev'],
-            'log_message': commit_message
+            'log_message': commit_message,
+            'author_date': timestamp_to_datetime(msg['body']['msg']['author_date']),
+            'commit_date': timestamp_to_datetime(msg['body']['msg']['commit_date'])
         })[0]
 
         bug_rel_mapping = self.parse_bugzilla_bugs(commit_message)
