@@ -9,7 +9,7 @@ import fedmsg.config
 
 
 config = fedmsg.config.load_config()
-logging.basicConfig(format='[%(filename)s:%(lineno)s:%(funcName)s] %(message)s')
+logging.basicConfig(format='%(asctime) [%(filename)s:%(lineno)s:%(funcName)s] %(message)s')
 log = logging.getLogger('estuary_updater')
 log.setLevel(config.get('estuary_updater.log_level', logging.INFO))
 
