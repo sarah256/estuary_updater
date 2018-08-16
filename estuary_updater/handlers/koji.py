@@ -51,6 +51,8 @@ class KojiHandler(BaseHandler):
 
         :param dict msg: a message to be processed
         """
+        if not msg['body']['msg']['info']['source']:
+            return
         commit_hash_pattern = re.compile(r'(?:\#)([0-9a-f]{40})$')
         commit_hash = re.findall(commit_hash_pattern, msg['body']['msg']['info']['source'])
 
