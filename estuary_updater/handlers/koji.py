@@ -4,10 +4,11 @@ from __future__ import unicode_literals, absolute_import
 
 import re
 
-from estuary.models.koji import KojiBuild, KojiTag
+from estuary.models.koji import KojiBuild, KojiTag, ModuleKojiBuild
 from estuary.models.distgit import DistGitCommit
 
 from estuary_updater.handlers.base import BaseHandler
+from estuary_updater import log
 
 
 class KojiHandler(BaseHandler):
@@ -63,6 +64,28 @@ class KojiHandler(BaseHandler):
             })[0]
 
             build = self.get_or_create_build(msg['body']['msg']['info']['id'])
+
+            if build.__label__ == ModuleKojiBuild.__label__:
+                extra_json = msg['body']['msg']['info']['extra']
+                module_extra_info = extra_json.get('typeinfo', {}).get('module')
+                module_build_tag_name = module_extra_info.get('content_koji_tag')
+                if module_build_tag_name:
+                    try:
+                        tag_info = self.koji_session.getTag(module_build_tag_name)
+                    except Exception:
+                        log.error('Failed to get tag {0}'.format(module_build_tag_name))
+                        raise
+                    module_build_tag = KojiTag.create_or_update({
+                        'id_': tag_info['id'],
+                        'name': module_build_tag_name
+                    })[0]
+
+                    module_build_tag.module_builds.connect(build)
+
+                    _, components = self.koji_session.listTaggedRPMS(module_build_tag)
+                    for component in components:
+                        component_build = self.get_or_create_build(component)
+                        build.components.connect(component_build)
 
             build.conditional_connect(build.commit, commit)
 

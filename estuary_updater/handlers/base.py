@@ -8,7 +8,7 @@ import json
 
 import neomodel
 import koji
-from estuary.models.koji import KojiBuild, ContainerKojiBuild
+from estuary.models.koji import KojiBuild, ContainerKojiBuild, ModuleKojiBuild
 from estuary.models.user import User
 
 from estuary_updater import log
@@ -88,32 +88,47 @@ class BaseHandler(object):
         else:
             return False
 
+    def is_module_build(self, build_info):
+        """
+        Check whether a Koji build is a module build.
+
+        :param KojiBuild build_info: build info from Koji API
+        :return: boolean value indicating whether the build is a module build
+        :rtype: bool
+        """
+        return bool(build_info.get('extra').get('typeinfo', {}).get('module'))
+
     def get_or_create_build(self, identifier, original_nvr=None, force_container_label=False):
         """
         Get a Koji build from Neo4j, or create it if it does not exist in Neo4j.
 
-        :param str/int identifier: an NVR (str) or build ID (int)
+        :param str/int identifier: an NVR (str) or build ID (int), or a dict of info from Koji API
         :kwarg str original_nvr: original_nvr property for the ContainerKojiBuild
         :kwarg bool force_container_label: when true, this skips the check to see if the build is a
         container and just creates the build with the ContainerKojiBuild label
         :rtype: KojiBuild
         :return: the Koji Build retrieved or created from Neo4j
         """
-        try:
-            build_info = self.koji_session.getBuild(identifier, strict=True)
-        except Exception:
-            log.error('Failed to get brew build using the identifier {0}'.format(identifier))
-            raise
+        if type(identifier) is dict:
+            build_info = identifier
+        else:
+            try:
+                build_info = self.koji_session.getBuild(identifier, strict=True)
+            except Exception:
+                log.error('Failed to get brew build using the identifier {0}'.format(identifier))
+                raise
 
         build_params = {
             'epoch': build_info['epoch'],
-            'extra': json.dumps(build_info['extra']),
             'id_': str(build_info['id']),
             'name': build_info['package_name'],
             'release': build_info['release'],
             'state': build_info['state'],
             'version': build_info['version']
         }
+
+        if build_info.get('extra'):
+            build_params['extra'] = json.dumps(build_info['extra'])
 
         # To handle the case when a message has a null timestamp
         for ts in ('completion_ts', 'creation_ts', 'start_ts'):
@@ -130,10 +145,29 @@ class BaseHandler(object):
         if force_container_label or self.is_container_build(build_info):
             if original_nvr:
                 build_params['original_nvr'] = original_nvr
-            koji_build = ContainerKojiBuild.create_or_update(build_params)[0]
+            build = ContainerKojiBuild.create_or_update(build_params)[0]
+        elif self.is_module_build(build_info):
+            module_extra_info = build_info['extra'].get('typeinfo', {}).get('module')
+            build_params['context'] = module_extra_info.get('context')
+            build_params['mbs_id'] = module_extra_info.get('module_build_service_id')
+            build_params['module_name'] = module_extra_info.get('name')
+            build_params['module_stream'] = module_extra_info.get('stream')
+            build_params['module_version'] = module_extra_info.get('version')
+            try:
+                build = ModuleKojiBuild.create_or_update(build_params)[0]
+            except neomodel.exceptions.ConstraintValidationFailed:
+                # This must have errantly been created as a KojiBuild instead of a
+                # ModuleKojiBuild, so let's fix that.
+                build = KojiBuild.nodes.get_or_none(id_=build_params['id_'])
+                if not build:
+                    # If there was a constraint validation failure and the build isn't just the
+                    # wrong label, then we can't recover.
+                    raise
+                build.add_label(ModuleKojiBuild.__label__)
+                build = ModuleKojiBuild.create_or_update(build_params)[0]
         else:
-            koji_build = KojiBuild.create_or_update(build_params)[0]
+            build = KojiBuild.create_or_update(build_params)[0]
 
-        koji_build.conditional_connect(koji_build.owner, owner)
+        build.conditional_connect(build.owner, owner)
 
-        return koji_build
+        return build

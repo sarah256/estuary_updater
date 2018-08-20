@@ -1,0 +1,86 @@
+{
+    "body":{
+        "headers":{
+            "content-length": "7859", 
+            "expires": "0", 
+            "old": "null", 
+            "JMS_AMQP_MESSAGE_FORMAT": "0", 
+            "timestamp": "0", 
+            "JMS_AMQP_NATIVE": "false", 
+            "destination": "/topic/VirtualTopic.eng.brew.build.complete", 
+            "priority": "4", 
+            "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+            "message-id": "ID:messaging.domain.com-35583-1534424190431-4:97778:0:0:1", 
+            "version": "rhel", 
+            "attribute": "state", 
+            "release": "20180817161005.9edba152", 
+            "new": "COMPLETE", 
+            "JMS_AMQP_FirstAcquirer": "false", 
+            "type": "BuildStateChange", 
+            "name": "virt"
+        },
+        "msg":{
+            "info": {
+              "package_name": "virt", 
+              "extra": {
+                "typeinfo": {
+                  "module": {
+                    "modulemd_str": "module", 
+                    "name": "virt", 
+                    "stream": "rhel", 
+                    "module_build_service_id": 1648, 
+                    "version": "20180817161005", 
+                    "context": "9edba152", 
+                    "content_koji_tag": "module-virt-rhel-20180817161005-9edba152"
+                  }
+                }
+              }, 
+              "creation_time": "2018-08-17 16:54:29.130573", 
+              "completion_time": "2018-08-17 16:54:17", 
+              "package_id": 66471, 
+              "id": 753795, 
+              "build_id": 753795, 
+              "state": 1, 
+              "source": "git://pkgs.domain.com/modules/virt?#cf0bd75c564366cc03b882a94cdcb9da0945690a", 
+              "epoch": null, 
+              "version": "rhel", 
+              "completion_ts": 1534524857.0, 
+              "owner_id": 3704, 
+              "owner_name": "emusk", 
+              "nvr": "virt-rhel-20180817161005.9edba152", 
+              "start_time": "2018-08-17 16:10:29", 
+              "creation_event_id": 21239712, 
+              "start_ts": 1534522229.0, 
+              "volume_id": 0, 
+              "creation_ts": 1534524869.13057, 
+              "name": "virt", 
+              "task_id": null, 
+              "volume_name": "DEFAULT", 
+              "release": "20180817161005.9edba152"
+            }, 
+            "attribute": "state", 
+            "old": null, 
+            "new": 1
+        }  
+    },
+    "topic":"/topic/VirtualTopic.eng.brew.build.complete",
+    "headers":{
+        "content-length": "7859", 
+        "expires": "0", 
+        "old": "null", 
+        "JMS_AMQP_MESSAGE_FORMAT": "0", 
+        "timestamp": "0", 
+        "JMS_AMQP_NATIVE": "false", 
+        "destination": "/topic/VirtualTopic.eng.brew.build.complete", 
+        "priority": "4", 
+        "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+        "message-id": "ID:messaging.domain.com-35583-1534424190431-4:97778:0:0:1", 
+        "version": "rhel", 
+        "attribute": "state", 
+        "release": "20180817161005.9edba152", 
+        "new": "COMPLETE", 
+        "JMS_AMQP_FirstAcquirer": "false", 
+        "type": "BuildStateChange", 
+        "name": "virt"
+    }
+}
