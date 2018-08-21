@@ -96,27 +96,27 @@ class BaseHandler(object):
         :return: boolean value indicating whether the build is a module build
         :rtype: bool
         """
-        if build_info.get('extra').get('typeinfo', {}).get('module'):
-            return True
-
-        return False
+        return bool(build_info.get('extra').get('typeinfo', {}).get('module'))
 
     def get_or_create_build(self, identifier, original_nvr=None, force_container_label=False):
         """
         Get a Koji build from Neo4j, or create it if it does not exist in Neo4j.
 
-        :param str/int identifier: an NVR (str) or build ID (int)
+        :param str/int identifier: an NVR (str) or build ID (int), or a dict of info from Koji API
         :kwarg str original_nvr: original_nvr property for the ContainerKojiBuild
         :kwarg bool force_container_label: when true, this skips the check to see if the build is a
         container and just creates the build with the ContainerKojiBuild label
         :rtype: KojiBuild
         :return: the Koji Build retrieved or created from Neo4j
         """
-        try:
-            build_info = self.koji_session.getBuild(identifier, strict=True)
-        except Exception:
-            log.error('Failed to get brew build using the identifier {0}'.format(identifier))
-            raise
+        if type(identifier) is dict:
+            build_info = identifier
+        else:
+            try:
+                build_info = self.koji_session.getBuild(identifier, strict=True)
+            except Exception:
+                log.error('Failed to get brew build using the identifier {0}'.format(identifier))
+                raise
 
         build_params = {
             'epoch': build_info['epoch'],

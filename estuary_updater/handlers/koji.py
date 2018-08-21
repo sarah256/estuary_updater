@@ -3,7 +3,6 @@
 from __future__ import unicode_literals, absolute_import
 
 import re
-import json
 
 from estuary.models.koji import KojiBuild, KojiTag, ModuleKojiBuild
 from estuary.models.distgit import DistGitCommit
@@ -66,6 +65,28 @@ class KojiHandler(BaseHandler):
 
             build = self.get_or_create_build(msg['body']['msg']['info']['id'])
 
+            if build.__label__ == ModuleKojiBuild.__label__:
+                extra_json = msg['body']['msg']['info']['extra']
+                module_extra_info = extra_json.get('typeinfo', {}).get('module')
+                module_build_tag_name = module_extra_info.get('content_koji_tag')
+                if module_build_tag_name:
+                    try:
+                        tag_info = self.koji_session.getTag(module_build_tag_name)
+                    except Exception:
+                        log.error('Failed to get tag {0}'.format(module_build_tag_name))
+                        raise
+                    module_build_tag = KojiTag.create_or_update({
+                        'id_': tag_info['id'],
+                        'name': module_build_tag_name
+                    })[0]
+
+                    module_build_tag.module_builds.connect(build)
+
+                    _, components = self.koji_session.listTaggedRPMS(module_build_tag)
+                    for component in components:
+                        component_build = self.get_or_create_build(component)
+                        build.components.connect(component_build)
+
             build.commit.connect(commit)
 
     def build_tag_handler(self, msg):
@@ -78,29 +99,6 @@ class KojiHandler(BaseHandler):
         # Check to see if we want to process this tag
         if not build:
             return
-
-        if build.__label__ == ModuleKojiBuild.__label__:
-            extra_json = json.loads(msg['body']['msg']['info']['extra'])
-            module_extra_info = extra_json.get('typeinfo', {}).get('module')
-            module_build_tag_name = module_extra_info.get('content_koji_tag')
-            if module_build_tag_name:
-                try:
-                    tag_info = self.koji_session.getTag(module_build_tag_name, strict=True)
-                except Exception:
-                    log.error('Failed to get tag {0}'.format(module_build_tag_name))
-                    raise
-                module_build_tag = KojiTag.create_or_update(dict(
-                    id_=tag_info[0]['tag_id'],
-                    name=module_build_tag_name
-                ))[0]
-                module_build_tag.module_builds.connect(build)
-
-                for item in tag_info:
-                    module_component = KojiBuild.get_or_create(dict(
-                        id_=item['build_id']
-                    ))[0]
-                    build.components.connect(module_component)
-
         tag = KojiTag.create_or_update({
             'id_': msg['body']['msg']['tag']['id'],
             'name': msg['body']['msg']['tag']['name']

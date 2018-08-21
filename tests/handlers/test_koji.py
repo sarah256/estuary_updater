@@ -49,11 +49,13 @@ def test_build_complete(mock_koji_cs, mock_getBuild_complete):
 
 
 @mock.patch('koji.ClientSession')
-def test_modulebuild_complete(mock_koji_cs, mock_getBuild_module_complete, modulebuild_koji_tag):
+def test_modulebuild_complete(mock_koji_cs, mock_getBuild_module_complete,
+                              module_build_getTag, mock_getBuild_complete):
     """Test the Koji handler when it recieves a new build complete message."""
     mock_koji_session = mock.Mock()
     mock_koji_session.getBuild.return_value = mock_getBuild_module_complete
-    mock_koji_session.getTag.return_value = modulebuild_koji_tag
+    mock_koji_session.getTag.return_value = module_build_getTag
+    mock_koji_session.listTaggedRPMS.return_value = [[], [mock_getBuild_complete]]
     mock_koji_cs.return_value = mock_koji_session
 
     with open(path.join(message_dir, 'koji', 'modulebuild_complete.json'), 'r') as f:
@@ -86,8 +88,10 @@ def test_modulebuild_complete(mock_koji_cs, mock_getBuild_module_complete, modul
     assert build.module_version == '20180817161005'
 
     commit = DistGitCommit.nodes.get_or_none(hash_='cf0bd75c564366cc03b882a94cdcb9da0945690a')
+    component = KojiBuild.nodes.get_or_none(id_='736244')
 
     build.commit.is_connected(commit)
+    build.component.is_connected(component)
 
 
 def test_build_tag(kb_one):

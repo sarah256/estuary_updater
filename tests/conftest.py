@@ -152,9 +152,9 @@ def koji_tag():
 
 
 @pytest.fixture
-def modulebuild_koji_tag():
-    """Return a KojiTag."""
-    return KojiTag.get_or_create({
-        'id_': '12233',
+def module_build_getTag():
+    """Return a KojiTag in the format of koji.ClientSession.getTag."""
+    return {
+        'id': '12233',
         'name': 'module-virt-rhel-20180817161005-9edba152'
-    })[0]
+    }
