@@ -116,7 +116,7 @@ class BaseHandler(object):
             build_info = self.koji_session.getBuild(identifier, strict=True)
         except Exception:
             log.error('Failed to get brew build using the identifier {0}'.format(identifier))
-            raise          
+            raise
 
         build_params = {
             'epoch': build_info['epoch'],

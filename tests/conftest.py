@@ -56,7 +56,7 @@ def mock_getBuild_one():
 
 
 @pytest.fixture
-def mock_getBuild_two():
+def mock_getBuild_complete():
     """Return a mock build in the format of koji.ClientSession.getBuild."""
     return {
         'completion_ts': 1529094398.0,
@@ -71,6 +71,37 @@ def mock_getBuild_two():
         'release': '8.el8+1325+72a36e76',
         'version': '17.4.0',
         'start_ts': 1533318582.73551,
+        'state': koji.BUILD_STATES['COMPLETE']
+    }
+
+
+@pytest.fixture
+def mock_getBuild_module_complete():
+    """Return a mock build in the format of koji.ClientSession.getBuild."""
+    return {
+        'completion_ts': 1534524857.0,
+        'creation_ts': 1534524869.13057,
+        'epoch': None,
+        'extra': {
+            "typeinfo": {
+                "module": {
+                    "modulemd_str": "module",
+                    "name": "virt",
+                    "stream": "rhel",
+                    "module_build_service_id": 1648,
+                    "version": "20180817161005",
+                    "context": "9edba152",
+                    "content_koji_tag": "module-virt-rhel-20180817161005-9edba152"
+                }
+            }
+        },
+        'id': 753795,
+        'name': 'virt',
+        'package_name': 'virt',
+        'owner_name': 'emusk',
+        'release': '20180817161005.9edba152',
+        'version': 'rhel',
+        'start_ts': 1534522229.0,
         'state': koji.BUILD_STATES['COMPLETE']
     }
 
@@ -117,4 +148,13 @@ def koji_tag():
     return KojiTag.get_or_create({
         'id_': '15638',
         'name': 'rhos-13.0-rhel-7-pending'
+    })[0]
+
+
+@pytest.fixture
+def modulebuild_koji_tag():
+    """Return a KojiTag."""
+    return KojiTag.get_or_create({
+        'id_': '12233',
+        'name': 'module-virt-rhel-20180817161005-9edba152'
     })[0]
