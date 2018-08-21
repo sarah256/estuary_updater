@@ -103,12 +103,11 @@ class ErrataHandler(BaseHandler):
             'product_name': product_json['product']['name'],
             'product_short_name': msg['body']['msg']['product'],
             'security_impact': advisory_info['security_impact'],
-            'security_sla': advisory_info['security_sla'],
             'state': advisory_info['status'],
             'synopsis': msg['body']['headers']['synopsis']
         }
         for dt in ('actual_ship_date', 'created_at', 'issue_date', 'release_date',
-                   'status_updated_at', 'update_date'):
+                   'security_sla', 'status_updated_at', 'update_date'):
             if advisory_info[dt]:
                 if dt == 'status_updated_at':
                     estuary_key = 'status_time'
