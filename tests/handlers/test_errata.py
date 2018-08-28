@@ -72,6 +72,43 @@ def test_activity_status_handler():
         assert advisory.update_date == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
 
 
+@mock.patch('requests.get')
+def test_activity_status_handler_embargoed(mock_get):
+    """Test the errata handler when it receives an embargoed activity status message."""
+    mock_response_api = mock.Mock()
+    mock_response_api.json.return_value = {
+        'errata': {
+            'rhsa': {
+                'content_types': ['rpms'],
+                'id': 2345
+            }
+        }
+    }
+    mock_get.side_effect = [mock_response_api]
+
+    with open(path.join(message_dir, 'errata', 'activity_status_embargoed.json'), 'r') as f:
+        msg = json.load(f)
+    assert ErrataHandler.can_handle(msg) is True
+    handler = ErrataHandler(config)
+    handler.handle(msg)
+    advisory = Advisory.nodes.get_or_none(id_='2345')
+    assert advisory is not None
+    assert advisory.actual_ship_date is None
+    assert advisory.advisory_name == 'REDACTED'
+    assert advisory.content_types is None
+    assert advisory.created_at is None
+    assert advisory.issue_date is None
+    assert advisory.product_name is None
+    assert advisory.product_short_name is None
+    assert advisory.release_date is None
+    assert advisory.security_impact is None
+    assert advisory.security_sla is None
+    assert advisory.state is None
+    assert advisory.status_time is None
+    assert advisory.synopsis is None
+    assert advisory.update_date is None
+
+
 @mock.patch('koji.ClientSession')
 def test_builds_added_handler(mock_koji_cs, mock_getBuild_one):
     """Test the Errata handler when it receives a new builds added message."""
