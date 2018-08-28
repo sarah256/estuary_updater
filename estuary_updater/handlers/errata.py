@@ -65,55 +65,64 @@ class ErrataHandler(BaseHandler):
         advisory_type = msg['body']['headers']['type'].lower()
         advisory_info = advisory_json['errata'][advisory_type]
 
-        product_url = '{0}/products/{1}.json'.format(
-            self.config['estuary_updater.errata_url'].rstrip('/'),
-            advisory_info['product_id']
-        )
-        response = requests.get(product_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
-        product_json = response.json()
+        embargoed = msg['body']['headers']['errata_status'] == 'REDACTED'
+        # We can't store information on embargoed advisories other than the ID
+        if not embargoed:
+            product_url = '{0}/products/{1}.json'.format(
+                self.config['estuary_updater.errata_url'].rstrip('/'),
+                advisory_info['product_id']
+            )
+            response = requests.get(
+                product_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
+            product_json = response.json()
 
-        reporter_url = '{0}/api/v1/user/{1}'.format(
-            self.config['estuary_updater.errata_url'].rstrip('/'), advisory_info['reporter_id'])
-        response = requests.get(reporter_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
-        reporter_json = response.json()
+            reporter_url = '{0}/api/v1/user/{1}'.format(
+                self.config['estuary_updater.errata_url'].rstrip('/'), advisory_info['reporter_id'])
+            response = requests.get(
+                reporter_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
+            reporter_json = response.json()
 
-        reporter = User.create_or_update({
-            'username': reporter_json['login_name'].split('@')[0],
-            'email': reporter_json['email_address']
-        })[0]
+            reporter = User.create_or_update({
+                'username': reporter_json['login_name'].split('@')[0],
+                'email': reporter_json['email_address']
+            })[0]
 
-        assigned_to_url = '{0}/api/v1/user/{1}'.format(
-            self.config['estuary_updater.errata_url'].rstrip('/'),
-            advisory_info['assigned_to_id'])
-        response = requests.get(
-            assigned_to_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
-        assigned_to_json = response.json()
+            assigned_to_url = '{0}/api/v1/user/{1}'.format(
+                self.config['estuary_updater.errata_url'].rstrip('/'),
+                advisory_info['assigned_to_id'])
+            response = requests.get(
+                assigned_to_url, auth=requests_kerberos.HTTPKerberosAuth(), timeout=10)
+            assigned_to_json = response.json()
 
-        assigned_to = User.create_or_update({
-            'username': assigned_to_json['login_name'].split('@')[0],
-            'email': assigned_to_json['email_address']
-        })[0]
+            assigned_to = User.create_or_update({
+                'username': assigned_to_json['login_name'].split('@')[0],
+                'email': assigned_to_json['email_address']
+            })[0]
 
-        # TODO: The way DateTime objects are handled will need to be changed once we stop using the
-        # API, as the strings are formatted differently in the message bus messages
-        advisory_params = {
-            'advisory_name': msg['body']['msg']['fulladvisory'],
-            'content_types': advisory_info['content_types'],
-            'id_': advisory_id,
-            'product_name': product_json['product']['name'],
-            'product_short_name': msg['body']['msg']['product'],
-            'security_impact': advisory_info['security_impact'],
-            'state': advisory_info['status'],
-            'synopsis': msg['body']['headers']['synopsis']
-        }
-        for dt in ('actual_ship_date', 'created_at', 'issue_date', 'release_date',
-                   'security_sla', 'status_updated_at', 'update_date'):
-            if advisory_info[dt]:
-                if dt == 'status_updated_at':
-                    estuary_key = 'status_time'
-                else:
-                    estuary_key = dt
-                advisory_params[estuary_key] = timestamp_to_datetime(advisory_info[dt])
+            advisory_params = {
+                'advisory_name': msg['body']['msg']['fulladvisory'],
+                'content_types': advisory_info['content_types'],
+                'id_': advisory_id,
+                'product_name': product_json['product']['name'],
+                'product_short_name': msg['body']['msg']['product'],
+                'security_impact': advisory_info['security_impact'],
+                'state': advisory_info['status'],
+                'synopsis': msg['body']['headers']['synopsis']
+            }
+            for dt in ('actual_ship_date', 'created_at', 'issue_date', 'release_date',
+                       'security_sla', 'status_updated_at', 'update_date'):
+                if advisory_info[dt]:
+                    if dt == 'status_updated_at':
+                        estuary_key = 'status_time'
+                    else:
+                        estuary_key = dt
+                    advisory_params[estuary_key] = timestamp_to_datetime(advisory_info[dt])
+        else:
+            advisory_params = {
+                'id_': advisory_id,
+                # Set this to REDACTED and it'll be updated when it becomes public
+                'advisory_name': 'REDACTED'
+            }
 
         if 'docker' in advisory_info['content_types']:
             try:
@@ -136,14 +145,15 @@ class ErrataHandler(BaseHandler):
                 container_adv.remove_label(ContainerAdvisory.__label__)
             advisory = Advisory.create_or_update(advisory_params)[0]
 
-        advisory.conditional_connect(advisory.reporter, reporter)
-        advisory.conditional_connect(advisory.assigned_to, assigned_to)
+        if not embargoed:
+            advisory.conditional_connect(advisory.reporter, reporter)
+            advisory.conditional_connect(advisory.assigned_to, assigned_to)
 
-        bugs = advisory_json['bugs']['bugs']
+            bugs = advisory_json['bugs']['bugs']
 
-        for bug in bugs:
-            bug = BugzillaBug.get_or_create({'id_': bug['bug']['id']})[0]
-            advisory.attached_bugs.connect(bug)
+            for bug in bugs:
+                bug = BugzillaBug.get_or_create({'id_': bug['bug']['id']})[0]
+                advisory.attached_bugs.connect(bug)
 
     def builds_added_handler(self, msg):
         """
