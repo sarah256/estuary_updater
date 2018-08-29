@@ -78,7 +78,7 @@ class FreshmakerHandler(BaseHandler):
         :param dict msg: a message to be processed
         """
         build_info = msg['body']['msg']
-        event_id = msg['body']['msg']['id']
+        event_id = msg['body']['msg']['event_id']
         build = self.create_or_update_build(build_info, event_id)
         if build:
             event = FreshmakerEvent.nodes.get_or_none(id_=str(event_id))
