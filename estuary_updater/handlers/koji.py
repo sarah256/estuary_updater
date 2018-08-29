@@ -64,7 +64,7 @@ class KojiHandler(BaseHandler):
 
             build = self.get_or_create_build(msg['body']['msg']['info']['id'])
 
-            build.commit.connect(commit)
+            build.conditional_connect(build.commit, commit)
 
     def build_tag_handler(self, msg):
         """
