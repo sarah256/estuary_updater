@@ -94,7 +94,7 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
     mock_koji_session.getBuild.return_value = mock_getBuild_one
     mock_koji_cs.return_value = mock_koji_session
     event = FreshmakerEvent.get_or_create({
-        'id_': '1260',
+        'id_': '2094',
         'state': 1,
         'state_name': 'BUILDING',
         'event_type_id': 8,
