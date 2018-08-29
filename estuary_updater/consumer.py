@@ -29,10 +29,10 @@ class EstuaryUpdater(fedmsg.consumers.FedmsgConsumer):
         for handler_cls in all_handlers:
             if handler_cls.can_handle(msg):
                 log.debug('The handler {0} supports handling the message: {1}'.format(
-                    handler_cls.__name__, msg))
+                    handler_cls.__name__, msg['headers']['message-id']))
                 handler = handler_cls(config)
                 log.debug('The handler {0} is instantiated and will handle the message: {1}'.format(
-                    handler_cls.__name__, msg))
+                    handler_cls.__name__, msg['headers']['message-id']))
                 handler.handle(msg)
                 log.debug('The handler {0} is done handling the message: {1}'.format(
-                    handler_cls.__name__, msg))
+                    handler_cls.__name__, msg['headers']['message-id']))
