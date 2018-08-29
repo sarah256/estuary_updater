@@ -2,7 +2,7 @@
 # This script runs the test suite using Docker and Docker Compose
 
 for dir in estuary_updater tests; do
-    find ${dir} -type f \( -name '*.pyc' -or -name '*.pyc' \) -exec rm -f {} \;
+    find ${dir} -type f \( -name '*.pyc' -or -name '*.pyo' \) -exec rm -f {} \;
 done
 
 docker-compose -f docker/docker-compose-tests.yml up -d neo4j
