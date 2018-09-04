@@ -82,7 +82,7 @@ class KojiHandler(BaseHandler):
 
                     module_build_tag.module_builds.connect(build)
 
-                    _, components = self.koji_session.listTaggedRPMS(module_build_tag)
+                    _, components = self.koji_session.listTaggedRPMS(module_build_tag_name)
                     for component in components:
                         component_build = self.get_or_create_build(component)
                         build.components.connect(component_build)
