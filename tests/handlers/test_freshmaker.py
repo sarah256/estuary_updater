@@ -112,8 +112,8 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
 
     build = ContainerKojiBuild.nodes.get_or_none(id_='710916')
     assert build is not None
-    assert build.completion_time == datetime(2018, 6, 15, 16, 26, 38, tzinfo=pytz.utc)
-    assert build.creation_time == datetime(2018, 6, 15, 16, 20, 38, tzinfo=pytz.utc)
+    assert build.completion_time == datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc)
+    assert build.creation_time == datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc)
     assert build.epoch == 'epoch'
     assert build.extra == '{"container_koji_task_id": 17511743}'
     assert build.id_ == '710916'
@@ -121,7 +121,7 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
     assert build.original_nvr == 'e2e-container-test-product-container-7.5-133'
     assert build.release == '36.1528968216'
     assert build.version == '7.4'
-    assert build.start_time == datetime(2018, 6, 15, 16, 21, 38, tzinfo=pytz.utc)
+    assert build.start_time == datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc)
     assert build.state == 1
     assert build.triggered_by_freshmaker_event.is_connected(event)
 
