@@ -132,12 +132,11 @@ class BaseHandler(object):
             build_params['extra'] = json.dumps(build_info['extra'])
 
         # To handle the case when a message has a null timestamp
-        for time_key in ('completion_time', 'creation_time', 'start_time'):
-            # Certain Koji API endpoints omit the *_ts values but have the *_time values, so that's
-            # why the *_time values are used
-            if build_info[time_key]:
-                build_params[time_key] = datetime.strptime(
-                    build_info[time_key], '%Y-%m-%d %H:%M:%S.%f')
+        for ts in ('completion_ts', 'creation_ts', 'start_ts'):
+            # Remove last 2 characters and append 'time' to get key in build_params
+            dict_key = ts[:-2] + 'time'
+            if build_info[ts]:
+                build_params[dict_key] = datetime.fromtimestamp(int(build_info[ts]))
 
         owner = User.create_or_update({
             'username': build_info['owner_name'],
