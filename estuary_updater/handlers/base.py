@@ -75,18 +75,19 @@ class BaseHandler(object):
         :return: boolean value indicating whether the build is a container build
         :rtype: bool
         """
-        package_name = build_info['package_name']
+        pkg = build_info['package_name']
+        extra = build_info['extra']
         # Checking heuristics for determining if a build is a container build, since currently
         # there is no definitive way to do it.
-        if build_info['extra'] and (
-                build_info['extra'].get('container_koji_build_id') or
-                build_info['extra'].get('container_koji_task_id')):
-            return True
-        elif build_info['extra'].get('image') and\
-                (package_name.endswith('-container') or package_name.endswith('-docker')):
-            return True
-        else:
+        if not extra:
             return False
+
+        if extra.get('container_koji_build_id') or extra.get('container_koji_task_id'):
+            return True
+        elif extra.get('image') and (pkg.endswith('-container') or pkg.endswith('-docker')):
+            return True
+
+        return False
 
     def is_module_build(self, build_info):
         """
