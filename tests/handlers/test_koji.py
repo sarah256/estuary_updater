@@ -32,7 +32,7 @@ def test_build_complete(mock_koji_cs, mock_getBuild_complete):
     build = KojiBuild.nodes.get_or_none(id_='736244')
     assert build is not None
     assert build.completion_time == datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc)
-    assert build.creation_time == datetime(2018, 8, 3, 17, 49, 42, tzinfo=pytz.utc)
+    assert build.creation_time == datetime(2018, 8, 3, 17, 49, 42, 735510, tzinfo=pytz.utc)
     assert build.epoch is None
     assert build.extra == ('{"source": {"original_url": "git://pkgs.domain.com/rpms/python-'
                            'attrs?#3be3cb33e6432d8392ac3d9e6edffd990f618432"}}')
@@ -40,7 +40,7 @@ def test_build_complete(mock_koji_cs, mock_getBuild_complete):
     assert build.name == 'python-attrs'
     assert build.release == '8.el8+1325+72a36e76'
     assert build.version == '17.4.0'
-    assert build.start_time == datetime(2018, 8, 3, 17, 49, 42, tzinfo=pytz.utc)
+    assert build.start_time == datetime(2018, 8, 3, 17, 49, 42, 735510, tzinfo=pytz.utc)
     assert build.state == 1
 
     commit = DistGitCommit.nodes.get_or_none(hash_='3be3cb33e6432d8392ac3d9e6edffd990f618432')
@@ -55,6 +55,10 @@ def test_modulebuild_complete(mock_koji_cs, mock_getBuild_module_complete,
     mock_koji_session = mock.Mock()
     mock_koji_session.getBuild.return_value = mock_getBuild_module_complete
     mock_koji_session.getTag.return_value = module_build_getTag
+    # These values are present from the return value of getBuild but not listTaggedRPMS
+    del mock_getBuild_complete['completion_ts']
+    del mock_getBuild_complete['creation_ts']
+    del mock_getBuild_complete['start_ts']
     mock_koji_session.listTaggedRPMS.return_value = [[], [mock_getBuild_complete]]
     mock_koji_cs.return_value = mock_koji_session
 
@@ -68,7 +72,7 @@ def test_modulebuild_complete(mock_koji_cs, mock_getBuild_module_complete,
     # Regular Koji Build attributes
     assert build is not None
     assert build.completion_time == datetime(2018, 8, 17, 16, 54, 17, tzinfo=pytz.utc)
-    assert build.creation_time == datetime(2018, 8, 17, 16, 54, 29, tzinfo=pytz.utc)
+    assert build.creation_time == datetime(2018, 8, 17, 16, 54, 29, 130570, tzinfo=pytz.utc)
     assert build.epoch is None
     assert build.extra == ('{"typeinfo": {"module": {"modulemd_str": "module", "name": "virt",'
                            ' "stream": "rhel", "module_build_service_id": 1648, '
