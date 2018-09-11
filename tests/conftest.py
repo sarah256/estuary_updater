@@ -40,7 +40,9 @@ def consumer():
 def mock_getBuild_one():
     """Return a mock build in the format of koji.ClientSession.getBuild."""
     return {
+        'completion_time': '2018-06-15 20:26:38.000000',
         'completion_ts': 1529094398.0,
+        'creation_time': '2018-06-15 20:20:38.000000',
         'creation_ts': 1529094038.0,
         'epoch': 'epoch',
         'extra': {'container_koji_task_id': 17511743},
@@ -50,6 +52,7 @@ def mock_getBuild_one():
         'owner_name': 'emusk',
         'release': '36.1528968216',
         'version': '7.4',
+        'start_time': '2018-06-15 20:21:38.000000',
         'start_ts': 1529094098.0,
         'state': koji.BUILD_STATES['COMPLETE']
     }
@@ -59,7 +62,9 @@ def mock_getBuild_one():
 def mock_getBuild_complete():
     """Return a mock build in the format of koji.ClientSession.getBuild."""
     return {
+        'completion_time': '2018-06-15 20:26:38.000000',
         'completion_ts': 1529094398.0,
+        'creation_time': '2018-08-03 17:49:42.735510',
         'creation_ts': 1533318582.73551,
         'epoch': None,
         'extra': {"source": {"original_url": "git://pkgs.domain.com/rpms/python-attrs?#3be3cb33e64"
@@ -71,6 +76,7 @@ def mock_getBuild_complete():
         'release': '8.el8+1325+72a36e76',
         'version': '17.4.0',
         'start_ts': 1533318582.73551,
+        'start_time': '2018-08-03 17:49:42.735510',
         'state': koji.BUILD_STATES['COMPLETE']
     }
 
@@ -79,7 +85,9 @@ def mock_getBuild_complete():
 def mock_getBuild_module_complete():
     """Return a mock build in the format of koji.ClientSession.getBuild."""
     return {
+        'completion_time': '2018-08-17 16:54:17.000000',
         'completion_ts': 1534524857.0,
+        'creation_time': '2018-08-17 16:54:29.130570',
         'creation_ts': 1534524869.13057,
         'epoch': None,
         'extra': {
@@ -101,6 +109,7 @@ def mock_getBuild_module_complete():
         'owner_name': 'emusk',
         'release': '20180817161005.9edba152',
         'version': 'rhel',
+        'start_time': '2018-08-17 16:10:29.000000',
         'start_ts': 1534522229.0,
         'state': koji.BUILD_STATES['COMPLETE']
     }
