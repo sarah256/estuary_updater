@@ -136,8 +136,11 @@ class BaseHandler(object):
             # Certain Koji API endpoints omit the *_ts values but have the *_time values, so that's
             # why the *_time values are used
             if build_info[time_key]:
-                build_params[time_key] = datetime.strptime(
-                    build_info[time_key], '%Y-%m-%d %H:%M:%S.%f')
+                ts_format = r'%Y-%m-%d %H:%M:%S'
+                if len(build_info[time_key].rsplit('.', 1)) == 2:
+                    # If there are microseconds, go ahead and parse that too
+                    ts_format += r'.%f'
+                build_params[time_key] = datetime.strptime(build_info[time_key], ts_format)
 
         owner = User.create_or_update({
             'username': build_info['owner_name'],
