@@ -97,7 +97,11 @@ class BaseHandler(object):
         :return: boolean value indicating whether the build is a module build
         :rtype: bool
         """
-        return bool(build_info.get('extra', {}).get('typeinfo', {}).get('module'))
+        build_extra = build_info.get('extra', {})
+        if not build_extra:
+            return False
+
+        return bool(build_extra.get('typeinfo', {}).get('module'))
 
     def get_or_create_build(self, identifier, original_nvr=None, force_container_label=False):
         """
