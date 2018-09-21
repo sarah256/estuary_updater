@@ -1,0 +1,78 @@
+{
+    "body":{
+        "headers":{
+            "content-length": "840", 
+            "expires": "0", 
+            "old": "null", 
+            "JMS_AMQP_MESSAGE_FORMAT": "0", 
+            "timestamp": "0", 
+            "JMS_AMQP_NATIVE": "false", 
+            "destination": "/topic/VirtualTopic.eng.brew.build.building", 
+            "priority": "4", 
+            "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+            "message-id": "ID:messaging.domain.com-37550-1534679656045-5:49075:0:0:1", 
+            "version": "4.3", 
+            "attribute": "state", 
+            "release": "17.el8", 
+            "new": "BUILDING", 
+            "JMS_AMQP_FirstAcquirer": "false", 
+            "type": "BuildStateChange", 
+            "name": "e2e"
+        },
+        "msg":{
+            "info": {
+              "package_name": "e2e", 
+              "extra": {
+                "source": {
+                  "original_url": "git://pkgs.domain.com/rpms/e2e#09d40c9bdfd34c5130f8f02e49e059efd33bddf7"
+                }
+              }, 
+              "creation_time": "2018-08-20 15:07:27.589203", 
+              "completion_time": null, 
+              "package_id": 3063, 
+              "id": 710916, 
+              "build_id": 710916, 
+              "state": 0, 
+              "source": "git://pkgs.domain.com/rpms/e2e#09d40c9bdfd34c5130f8f02e49e059efd33bddf7", 
+              "epoch": null, 
+              "version": "4.3", 
+              "completion_ts": null, 
+              "owner_id": 1687, 
+              "owner_name": "emusk", 
+              "nvr": "e2e-4.3-17.el8", 
+              "start_time": "2018-08-20 15:07:27.589203", 
+              "creation_event_id": 21251925, 
+              "start_ts": 1534777647.5892, 
+              "volume_id": 0, 
+              "creation_ts": 1534777647.5892, 
+              "name": "e2e", 
+              "task_id": 17952030, 
+              "volume_name": "DEFAULT", 
+              "release": "17.el8"
+            }, 
+            "attribute": "state", 
+            "old": null, 
+            "new": 0
+        }  
+    },
+    "topic":"/topic/VirtualTopic.eng.brew.build.building",
+    "headers":{
+        "content-length": "840", 
+        "expires": "0", 
+        "old": "null", 
+        "JMS_AMQP_MESSAGE_FORMAT": "0", 
+        "timestamp": "0", 
+        "JMS_AMQP_NATIVE": "false", 
+        "destination": "/topic/VirtualTopic.eng.brew.build.building", 
+        "priority": "4", 
+        "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+        "message-id": "ID:messaging.domain.com-37550-1534679656045-5:49075:0:0:1", 
+        "version": "4.3", 
+        "attribute": "state", 
+        "release": "17.el8", 
+        "new": "BUILDING", 
+        "JMS_AMQP_FirstAcquirer": "false", 
+        "type": "BuildStateChange", 
+        "name": "e2e"
+    }
+}

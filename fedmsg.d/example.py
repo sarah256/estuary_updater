@@ -22,6 +22,10 @@ config = {
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.errata.builds.added',
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.errata.builds.removed',
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.complete',
+        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.building',
+        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.failed',
+        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.canceled',
+        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.deleted',
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.tag',
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.untag'
 

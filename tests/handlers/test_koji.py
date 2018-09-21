@@ -8,10 +8,11 @@ from datetime import datetime
 
 from estuary.models.koji import KojiBuild, KojiTag, ModuleKojiBuild
 from estuary.models.distgit import DistGitCommit
+import koji
 import pytz
 import mock
 
-from tests import message_dir
+from tests import message_dir, utils
 from estuary_updater.handlers.koji import KojiHandler
 from estuary_updater import config
 
@@ -96,6 +97,90 @@ def test_modulebuild_complete(mock_koji_cs, mock_getBuild_module_complete,
 
     build.commit.is_connected(commit)
     build.components.is_connected(component)
+
+
+@mock.patch('koji.ClientSession')
+def test_build_building(mock_koji_cs):
+    """Test the Koji handler when it recieves a new build building message."""
+    mock_koji_session = mock.Mock()
+    mock_koji_session.getBuild.return_value = \
+        utils.mock_getBuild(koji.BUILD_STATES['BUILDING'])
+    mock_koji_cs.return_value = mock_koji_session
+
+    with open(path.join(message_dir, 'koji', 'build_building.json'), 'r') as f:
+        msg = json.load(f)
+    assert KojiHandler.can_handle(msg) is True
+    handler = KojiHandler(config)
+    handler.handle(msg)
+
+    build = KojiBuild.nodes.get_or_none(id_='710916')
+    assert build is not None
+    assert build.state == 0
+
+    commit = DistGitCommit.nodes.get_or_none(hash_='09d40c9bdfd34c5130f8f02e49e059efd33bddf7')
+    build.commit.is_connected(commit)
+
+
+@mock.patch('koji.ClientSession')
+def test_build_failed(mock_koji_cs):
+    """Test the Koji handler when it recieves a new build failed message."""
+    mock_koji_session = mock.Mock()
+    mock_koji_session.getBuild.return_value = utils.mock_getBuild(koji.BUILD_STATES['FAILED'])
+    mock_koji_cs.return_value = mock_koji_session
+
+    utils.mock_kojiBuild(koji.BUILD_STATES['BUILDING'])
+
+    with open(path.join(message_dir, 'koji', 'build_failed.json'), 'r') as f:
+        msg = json.load(f)
+    assert KojiHandler.can_handle(msg) is True
+    handler = KojiHandler(config)
+    handler.handle(msg)
+
+    build = KojiBuild.nodes.get_or_none(id_='710916')
+    assert build is not None
+    assert build.state == 3
+
+
+@mock.patch('koji.ClientSession')
+def test_build_canceled(mock_koji_cs):
+    """Test the Koji handler when it recieves a new build failed message."""
+    mock_koji_session = mock.Mock()
+    mock_koji_session.getBuild.return_value = \
+        utils.mock_getBuild(koji.BUILD_STATES['CANCELED'])
+    mock_koji_cs.return_value = mock_koji_session
+
+    utils.mock_kojiBuild(koji.BUILD_STATES['BUILDING'])
+
+    with open(path.join(message_dir, 'koji', 'build_canceled.json'), 'r') as f:
+        msg = json.load(f)
+    assert KojiHandler.can_handle(msg) is True
+    handler = KojiHandler(config)
+    handler.handle(msg)
+
+    build = KojiBuild.nodes.get_or_none(id_='710916')
+    assert build is not None
+    assert build.state == 4
+
+
+@mock.patch('koji.ClientSession')
+def test_build_deleted(mock_koji_cs):
+    """Test the Koji handler when it recieves a new build failed message."""
+    mock_koji_session = mock.Mock()
+    mock_koji_session.getBuild.return_value = \
+        utils.mock_getBuild(koji.BUILD_STATES['DELETED'])
+    mock_koji_cs.return_value = mock_koji_session
+
+    utils.mock_kojiBuild(koji.BUILD_STATES['COMPLETE'])
+
+    with open(path.join(message_dir, 'koji', 'build_deleted.json'), 'r') as f:
+        msg = json.load(f)
+    assert KojiHandler.can_handle(msg) is True
+    handler = KojiHandler(config)
+    handler.handle(msg)
+
+    build = KojiBuild.nodes.get_or_none(id_='710916')
+    assert build is not None
+    assert build.state == 2
 
 
 def test_build_tag(kb_one):

@@ -67,8 +67,8 @@ def mock_getBuild_complete():
         'creation_time': '2018-08-03 17:49:42.735510',
         'creation_ts': 1533318582.73551,
         'epoch': None,
-        'extra': {"source": {"original_url": "git://pkgs.domain.com/rpms/python-attrs?#3be3cb33e64"
-                                             "32d8392ac3d9e6edffd990f618432"}},
+        'extra': {'source': {'original_url': 'git://pkgs.domain.com/rpms/python-attrs?#3be3cb33e64'
+                                             '32d8392ac3d9e6edffd990f618432'}},
         'id': 736244,
         'name': 'python-attrs',
         'package_name': 'python-attrs',
@@ -122,7 +122,7 @@ def cb_one():
         'completion_time': datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc),
         'creation_time': datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc),
         'epoch': 'epoch',
-        'extra': '{"container_koji_task_id": 17511743}',
+        'extra': {'container_koji_task_id': 17511743},
         'id_': '710916',
         'name': 'e2e-container-test-product-container',
         'package_name': 'openstack-zaqar-container',
