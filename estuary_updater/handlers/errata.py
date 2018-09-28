@@ -161,9 +161,14 @@ class ErrataHandler(BaseHandler):
 
         :param dict msg: a message to be processed
         """
+        embargoed = msg['body']['headers']['brew_build'] == 'REDACTED'
+        # We can't store information on embargoed advisories other than the ID
+        if embargoed:
+            return
         advisory = Advisory.get_or_create({
             'id_': msg['body']['headers']['errata_id']
         })[0]
+
         nvr = msg['body']['headers']['brew_build']
         koji_build = self.get_or_create_build(nvr)
 
@@ -175,6 +180,10 @@ class ErrataHandler(BaseHandler):
 
         :param dict msg: a message to be processed
         """
+        embargoed = msg['body']['headers']['brew_build'] == 'REDACTED'
+        # We can't store information on embargoed advisories other than the ID
+        if embargoed:
+            return
         advisory = Advisory.get_or_create({
             'id_': msg['body']['headers']['errata_id']
         })[0]

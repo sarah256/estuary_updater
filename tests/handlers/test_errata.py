@@ -168,3 +168,25 @@ def test_builds_removed_handler(mock_koji_cs, mock_getBuild_one, cb_one):
 
     assert advisory is not None
     assert not advisory.attached_builds.is_connected(cb_one)
+
+
+def test_builds_added_embargoed():
+    """Test the errata handler when it receives an embargoed builds removed message."""
+    advisory = Advisory.get_or_create({'id_': '36131', 'advisory_name': 'REDACTED'})[0]
+    with open(path.join(message_dir, 'errata', 'builds_added_redacted.json'), 'r') as f:
+        msg = json.load(f)
+    assert ErrataHandler.can_handle(msg) is True
+    handler = ErrataHandler(config)
+    handler.handle(msg)
+    assert advisory.attached_builds.all() == []
+
+
+def test_builds_removed_embargoed():
+    """Test the errata handler when it receives an embargoed builds removed message."""
+    advisory = Advisory.get_or_create({'id_': '36130', 'advisory_name': 'REDACTED'})[0]
+    with open(path.join(message_dir, 'errata', 'builds_removed_redacted.json'), 'r') as f:
+        msg = json.load(f)
+    assert ErrataHandler.can_handle(msg) is True
+    handler = ErrataHandler(config)
+    handler.handle(msg)
+    assert advisory.attached_builds.all() == []
