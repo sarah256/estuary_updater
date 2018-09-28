@@ -25,6 +25,10 @@ class KojiHandler(BaseHandler):
         """
         supported_topics = [
             '/topic/VirtualTopic.eng.brew.build.complete',
+            '/topic/VirtualTopic.eng.brew.build.building',
+            '/topic/VirtualTopic.eng.brew.build.failed',
+            '/topic/VirtualTopic.eng.brew.build.canceled',
+            '/topic/VirtualTopic.eng.brew.build.deleted',
             '/topic/VirtualTopic.eng.brew.build.tag',
             '/topic/VirtualTopic.eng.brew.build.untag'
         ]
@@ -38,17 +42,24 @@ class KojiHandler(BaseHandler):
         """
         topic = msg['topic']
 
-        if topic == '/topic/VirtualTopic.eng.brew.build.complete':
-            self.build_complete_handler(msg)
-        elif topic == '/topic/VirtualTopic.eng.brew.build.tag' or \
-                topic == '/topic/VirtualTopic.eng.brew.build.untag':
+        build_topic = ['/topic/VirtualTopic.eng.brew.build.complete',
+                       '/topic/VirtualTopic.eng.brew.build.building',
+                       '/topic/VirtualTopic.eng.brew.build.failed',
+                       '/topic/VirtualTopic.eng.brew.build.canceled',
+                       '/topic/VirtualTopic.eng.brew.build.deleted']
+        tag_topic = ['/topic/VirtualTopic.eng.brew.build.tag',
+                     '/topic/VirtualTopic.eng.brew.build.untag']
+
+        if topic in build_topic:
+            self.build_handler(msg)
+        elif topic in tag_topic:
             self.build_tag_handler(msg)
         else:
             raise RuntimeError('This message is unable to be handled: {0}'.format(msg))
 
-    def build_complete_handler(self, msg):
+    def build_handler(self, msg):
         """
-        Handle a build complete message and update Neo4j if necessary.
+        Handle a build state message and update Neo4j if necessary.
 
         :param dict msg: a message to be processed
         """
@@ -62,7 +73,6 @@ class KojiHandler(BaseHandler):
             commit = DistGitCommit.get_or_create({
                 'hash_': commit_hash[0]
             })[0]
-
             build = self.get_or_create_build(msg['body']['msg']['info']['id'])
 
             if build.__label__ == ModuleKojiBuild.__label__:

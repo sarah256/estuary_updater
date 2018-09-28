@@ -1,0 +1,78 @@
+{
+    "body":{
+        "headers":{
+            "content-length": "870", 
+            "expires": "0", 
+            "old": "CANCELED", 
+            "JMS_AMQP_MESSAGE_FORMAT": "0", 
+            "timestamp": "0", 
+            "JMS_AMQP_NATIVE": "false", 
+            "destination": "/topic/VirtualTopic.eng.brew.build.canceled", 
+            "priority": "4", 
+            "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+            "message-id": "ID:messaging.domain.com-35583-1534424190431-4:123628:0:2:1", 
+            "version": "7.4", 
+            "attribute": "state", 
+            "release": "36.1528968216", 
+            "new": "CANCELED", 
+            "JMS_AMQP_FirstAcquirer": "false", 
+            "type": "BuildStateChange", 
+            "name": "e2e"
+        },
+        "msg":{
+            "info": {
+                "package_name": "e2e", 
+                "extra": {
+                  "source": {
+                    "original_url": "git://pkgs.domain.com/rpms/e2e#09d40c9bdfd34c5130f8f02e49e059efd33bddf7"
+                  }
+                }, 
+                "creation_time": "2018-06-15 20:20:38.000000", 
+                "completion_time": null, 
+                "package_id": 66672, 
+                "id": 710916, 
+                "build_id": 710916, 
+                "state": 0, 
+                "source": "git://pkgs.domain.com/rpms/e2e#09d40c9bdfd34c5130f8f02e49e059efd33bddf7", 
+                "epoch": "epoch", 
+                "version": "7.4", 
+                "completion_ts": null, 
+                "owner_id": 37, 
+                "owner_name": "emusk", 
+                "nvr": "e2e-0.8.3-1.git9d09a4d.el8", 
+                "start_time": "2018-06-15 20:21:38.000000", 
+                "creation_event_id": 21254407, 
+                "start_ts": 1529094098.0, 
+                "volume_id": 0, 
+                "creation_ts": 1529094038.0, 
+                "name": "e2e", 
+                "task_id": 17954969, 
+                "volume_name": "DEFAULT", 
+                "release": "36.1528968216"
+            }, 
+            "attribute": "state", 
+            "old": 4, 
+            "new": 4
+        }  
+    },
+    "topic":"/topic/VirtualTopic.eng.brew.build.canceled",
+    "headers":{
+        "content-length": "870", 
+        "expires": "0", 
+        "old": "CANCELED", 
+        "JMS_AMQP_MESSAGE_FORMAT": "0", 
+        "timestamp": "0", 
+        "JMS_AMQP_NATIVE": "false", 
+        "destination": "/topic/VirtualTopic.eng.brew.build.canceled", 
+        "priority": "4", 
+        "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+        "message-id": "ID:messaging.domain.com-35583-1534424190431-4:123628:0:2:1", 
+        "version": "7.4", 
+        "attribute": "state", 
+        "release": "36.1528968216", 
+        "new": "CANCELED", 
+        "JMS_AMQP_FirstAcquirer": "false", 
+        "type": "BuildStateChange", 
+        "name": "e2e"
+    }
+}
