@@ -1,0 +1,58 @@
+{  
+    "body": {  
+       "topic": "/topic/VirtualTopic.eng.errata.builds.added",
+       "msg": {  
+          "product": "REDACTED",
+          "release": "REDACTED",
+          "errata_id": 36131,
+          "brew_build": "REDACTED",
+          "when": "2018-09-14 19:19:12 UTC",
+          "who": "REDACTED",
+          "product_versions": [  
+             "REDACTED"
+          ]
+       },
+       "headers": {  
+          "JMS_AMQP_FirstAcquirer": "false",
+          "brew_build": "REDACTED",
+          "subject": "errata.builds.added",
+          "message-id": "ID:messaging.domain.com-38086-1536885036904-4:67960:0:0:1",
+          "type": "errata.builds.added",
+          "errata_id": "36131",
+          "who": "REDACTED",
+          "destination": "/topic/VirtualTopic.eng.errata.builds.added",
+          "JMS_AMQP_MESSAGE_FORMAT": "0",
+          "product": "REDACTED",
+          "timestamp": "0",
+          "expires": "0",
+          "subscription": "/queue/Consumer.msg-client-estuary-updater.dev.VirtualTopic.eng.errata.builds.added",
+          "JMS_AMQP_NATIVE": "false",
+          "persistent": "true",
+          "priority": "4",
+          "when": "2018-09-14 19:19:12 UTC",
+          "release": "REDACTED"
+       }
+    },
+    "topic": "/topic/VirtualTopic.eng.errata.builds.added",
+    "headers": {  
+       "JMS_AMQP_FirstAcquirer": "false",
+       "brew_build": "REDACTED",
+       "subject": "errata.builds.added",
+       "message-id": "ID:messaging.domain.com-38086-1536885036904-4:67960:0:0:1",
+       "type": "errata.builds.added",
+       "errata_id": "36131",
+       "who": "REDACTED",
+       "destination": "/topic/VirtualTopic.eng.errata.builds.added",
+       "JMS_AMQP_MESSAGE_FORMAT": "0",
+       "product": "REDACTED",
+       "timestamp": "0",
+       "expires": "0",
+       "subscription": "/queue/Consumer.msg-client-estuary-updater.dev.VirtualTopic.eng.errata.builds.added",
+       "JMS_AMQP_NATIVE": "false",
+       "persistent": "true",
+       "priority": "4",
+       "when": "2018-09-14 19:19:12 UTC",
+       "release": "REDACTED"
+    }
+ }
+ 
