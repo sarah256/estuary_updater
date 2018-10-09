@@ -76,7 +76,7 @@ class BaseHandler(object):
         :rtype: bool
         """
         pkg = build_info['package_name']
-        extra = build_info['extra']
+        extra = build_info.get('extra')
         # Checking heuristics for determining if a build is a container build, since currently
         # there is no definitive way to do it.
         if not extra:
