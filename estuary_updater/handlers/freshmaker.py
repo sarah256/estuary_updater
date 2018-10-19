@@ -106,6 +106,11 @@ class FreshmakerHandler(BaseHandler):
             log.debug('Skipping build update for event {0} because build_id is not set'.format(
                 event_id))
             return None
+        # Ignore Freshmaker dry run mode, indicated by a negative ID
+        elif build['build_id'] < 0:
+            log.debug('Skipping build update for event {0} because it is a dry run'.format(
+                event_id))
+            return
 
         try:
             koji_task_result = self.koji_session.getTaskResult(build['build_id'])
