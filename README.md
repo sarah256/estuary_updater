@@ -1,3 +1,5 @@
+[![Docs Status](https://readthedocs.org/projects/estuary-updater/badge/?version=latest)](https://estuary-updater.readthedocs.io/en/latest/?badge=latest)
+
 # Estuary Updater
 
 A micro-service that updates the Neo4j graph database used by Estuary in real-time
@@ -141,3 +143,7 @@ Get a node from Neo4j.
         assert commit is not None
         # Do additional checks here
     ```
+
+
+## Code Documentation
+To document new files, please check [here](https://github.com/release-engineering/estuary-updater/tree/master/docs).
