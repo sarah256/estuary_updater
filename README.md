@@ -1,8 +1,11 @@
 [![Docs Status](https://readthedocs.org/projects/estuary-updater/badge/?version=latest)](https://estuary-updater.readthedocs.io/en/latest/?badge=latest)
 
-# Estuary Updater
+# Getting Started
 
-A micro-service that updates the Neo4j graph database used by Estuary in real-time
+## Overview
+
+Estuary Updater is a micro-service that updates the Neo4j graph database used by Estuary in real-time
+by reading and processing messages from the UMB.
 
 ## Run the Unit Tests
 
