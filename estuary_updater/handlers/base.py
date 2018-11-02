@@ -110,7 +110,7 @@ class BaseHandler(object):
         :param str/int identifier: an NVR (str) or build ID (int), or a dict of info from Koji API
         :kwarg str original_nvr: original_nvr property for the ContainerKojiBuild
         :kwarg bool force_container_label: when true, this skips the check to see if the build is a
-        container and just creates the build with the ContainerKojiBuild label
+            container and just creates the build with the ContainerKojiBuild label
         :rtype: KojiBuild
         :return: the Koji Build retrieved or created from Neo4j
         """

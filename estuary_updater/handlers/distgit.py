@@ -134,7 +134,7 @@ class DistGitHandler(BaseHandler):
         :param str commit_message: the dist-git commit message
         :rtype: dict
         :return: a dictionary with the keys resolves, related, reverted with
-        values as lists of Bugzilla IDs
+            values as lists of Bugzilla IDs
         """
         # Look for 'Resolves', 'Related', or 'Reverts' action Bugzilla bugs
         bugzilla_bug_pattern = re.compile(
