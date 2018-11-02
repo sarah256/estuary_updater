@@ -13,6 +13,10 @@ import sys
 import pkg_resources
 from datetime import datetime
 
+
+autodoc_mock_imports = ['koji', 'fedmsg', 'fedmsg.config']
+
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -57,8 +61,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
 ]
-
-autodoc_mock_imports = ['koji']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

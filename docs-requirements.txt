@@ -1,4 +1,10 @@
--r requirements.txt
+https://github.com/release-engineering/estuary-api/tarball/master#egg=estuary
+moksha.hub
+neomodel
+PyOpenSSL
 recommonmark
+requests
+requests_kerberos
 sphinx
 sphinx_rtd_theme
+stomper
