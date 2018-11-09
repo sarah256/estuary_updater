@@ -27,6 +27,7 @@ class ErrataHandler(BaseHandler):
         """
         supported_topics = [
             '/topic/VirtualTopic.eng.errata.activity.status',
+            '/topic/VirtualTopic.eng.errata.activity.created',
             '/topic/VirtualTopic.eng.errata.builds.added',
             '/topic/VirtualTopic.eng.errata.builds.removed'
         ]
@@ -40,8 +41,13 @@ class ErrataHandler(BaseHandler):
         """
         topic = msg['topic']
 
-        if topic == '/topic/VirtualTopic.eng.errata.activity.status':
-            self.activity_status_handler(msg)
+        advisory_topics = [
+            '/topic/VirtualTopic.eng.errata.activity.status',
+            '/topic/VirtualTopic.eng.errata.activity.created'
+        ]
+
+        if topic in advisory_topics:
+            self.advisory_handler(msg)
         elif topic == '/topic/VirtualTopic.eng.errata.builds.added':
             self.builds_added_handler(msg)
         elif topic == '/topic/VirtualTopic.eng.errata.builds.removed':
@@ -49,9 +55,9 @@ class ErrataHandler(BaseHandler):
         else:
             raise RuntimeError('This message is unable to be handled: {0}'.format(msg))
 
-    def activity_status_handler(self, msg):
+    def advisory_handler(self, msg):
         """
-        Handle an Errata tool activity status message and update Neo4j if necessary.
+        Handle an Errata tool advisory changes and update Neo4j if necessary.
 
         :param dict msg: a message to be processed
         """
@@ -65,7 +71,7 @@ class ErrataHandler(BaseHandler):
         advisory_type = msg['body']['headers']['type'].lower()
         advisory_info = advisory_json['errata'][advisory_type]
 
-        embargoed = msg['body']['headers']['errata_status'] == 'REDACTED'
+        embargoed = msg['body']['headers']['synopsis'] == 'REDACTED'
         # We can't store information on embargoed advisories other than the ID
         if not embargoed:
             product_url = '{0}/products/{1}.json'.format(
@@ -100,7 +106,7 @@ class ErrataHandler(BaseHandler):
             })[0]
 
             advisory_params = {
-                'advisory_name': msg['body']['msg']['fulladvisory'],
+                'advisory_name': advisory_info['fulladvisory'],
                 'content_types': advisory_info['content_types'],
                 'id_': advisory_id,
                 'product_name': product_json['product']['name'],
