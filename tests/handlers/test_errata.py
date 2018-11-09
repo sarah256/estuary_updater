@@ -11,13 +11,15 @@ from estuary.models.koji import KojiBuild
 from estuary.models.user import User
 import mock
 import pytz
+import pytest
 
 from estuary_updater.handlers.errata import ErrataHandler
 from estuary_updater import config
 from tests import message_dir
 
 
-def test_activity_status_handler():
+@pytest.mark.parametrize('msg_type', ['status', 'created'])
+def test_activity_status_handler(msg_type):
     """Test the errata handler when it receives a new activity status message."""
     with open(path.join(message_dir, 'errata', 'api_errata.json'), 'r') as f:
         errata_api_msg = json.load(f)
@@ -27,6 +29,9 @@ def test_activity_status_handler():
         reporter_info_msg = json.load(f)
     with open(path.join(message_dir, 'errata', 'api_assigned_to_info.json'), 'r') as f:
         assigned_to_info_msg = json.load(f)
+
+    if msg_type == 'created':
+        errata_api_msg['errata']['rhea']['status'] = 'NEW_FILES'
 
     with mock.patch('requests.get') as mock_get:
         mock_response_api = mock.Mock()
@@ -40,7 +45,7 @@ def test_activity_status_handler():
         mock_get.side_effect = [mock_response_api, mock_response_prod, mock_response_reporter,
                                 mock_response_assigned_to]
 
-        with open(path.join(message_dir, 'errata', 'activity_status.json'), 'r') as f:
+        with open(path.join(message_dir, 'errata', 'activity_{0}.json'.format(msg_type)), 'r') as f:
             msg = json.load(f)
         assert ErrataHandler.can_handle(msg) is True
         handler = ErrataHandler(config)
@@ -66,7 +71,7 @@ def test_activity_status_handler():
         assert advisory.release_date is None
         assert advisory.security_impact == 'None'
         assert advisory.security_sla is None
-        assert advisory.state == 'QE'
+        assert advisory.state == errata_api_msg['errata']['rhea']['status']
         assert advisory.status_time == datetime.datetime(2018, 7, 3, 14, 15, 40, tzinfo=pytz.utc)
         assert advisory.synopsis == 'libvirt-python bug fix and enhancement update'
         assert advisory.update_date == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)

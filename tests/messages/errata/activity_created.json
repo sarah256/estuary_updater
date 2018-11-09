@@ -1,0 +1,54 @@
+{
+    "body":{
+        "headers":{
+            "product": "RHEL", 
+            "expires": "0", 
+            "errata_id": "34661", 
+            "JMS_AMQP_MESSAGE_FORMAT": "0", 
+            "JMS_AMQP_NATIVE": "false", 
+            "destination": "/topic/VirtualTopic.eng.errata.activity.created", 
+            "when": "2018-10-31 15:24:51 UTC", 
+            "persistent": "true", 
+            "who": "emusk@redhat.com", 
+            "priority": "4", 
+            "synopsis": "libvirt-python bug fix and enhancement update", 
+            "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+            "message-id": "ID:messaging.domain.com-41228-1540958954248-11:37993:0:0:1", 
+            "timestamp": "0", 
+            "release": "RHEL-7.6.0", 
+            "JMS_AMQP_FirstAcquirer": "false", 
+            "type": "RHEA", 
+            "subject": "errata.activity.created"
+        },
+        "msg":{
+            "product": "RHEL", 
+            "errata_id": 34661, 
+            "who": "emusk@redhat.com", 
+            "when": "2018-10-31 15:24:51 UTC", 
+            "synopsis": "libvirt-python bug fix and enhancement update", 
+            "release": "RHEL-7.6.0", 
+            "type": "RHEA"
+        }  
+    },
+    "topic": "/topic/VirtualTopic.eng.errata.activity.created",
+    "headers":{
+        "product": "RHEL", 
+        "expires": "0", 
+        "errata_id": "34661", 
+        "JMS_AMQP_MESSAGE_FORMAT": "0", 
+        "JMS_AMQP_NATIVE": "false", 
+        "destination": "/topic/VirtualTopic.eng.errata.activity.created", 
+        "when": "2018-10-31 15:24:51 UTC", 
+        "persistent": "true", 
+        "who": "emusk@redhat.com", 
+        "priority": "4", 
+        "synopsis": "libvirt-python bug fix and enhancement update", 
+        "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>", 
+        "message-id": "ID:messaging.domain.com-41228-1540958954248-11:37993:0:0:1", 
+        "timestamp": "0", 
+        "release": "RHEL-7.6.0", 
+        "JMS_AMQP_FirstAcquirer": "false", 
+        "type": "RHEA", 
+        "subject": "errata.activity.created"
+    }
+}
