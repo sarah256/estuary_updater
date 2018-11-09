@@ -19,6 +19,7 @@ config = {
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.freshmaker.build.state.changed',  # noqa: E501
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.distgit.commit',
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.errata.activity.status',
+        '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.errata.activity.created'
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.errata.builds.added',
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.errata.builds.removed',
         '/queue/Consumer.msg-client-estuary-updater.env.VirtualTopic.eng.brew.build.complete',
