@@ -12,7 +12,10 @@ config = fedmsg.config.load_config()
 logging.basicConfig(
     format='%(asctime)s - %(filename)s:%(lineno)s:%(funcName)s - %(levelname)s: %(message)s')
 log = logging.getLogger('estuary_updater')
-log.setLevel(config.get('estuary_updater.log_level', logging.INFO))
+if isinstance(config.get('estuary_updater.log_level'), int):
+    log.setLevel(config['estuary_updater.log_level'])
+else:
+    log.setLevel(logging.INFO)
 
 try:
     version = pkg_resources.get_distribution('estuary').version
