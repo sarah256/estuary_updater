@@ -83,7 +83,7 @@ class FreshmakerHandler(BaseHandler):
         if build:
             event = FreshmakerEvent.nodes.get_or_none(id_=str(event_id))
             if event:
-                event.triggered_container_builds.connect(build)
+                event.successful_koji_builds.connect(build)
             else:
                 log.warn('The Freshmaker event {0} does not exist in Neo4j'.format(event_id))
 

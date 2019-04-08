@@ -46,7 +46,7 @@ def test_event_to_building():
     assert event.triggered_by_advisory.is_connected(advisory)
     # No container builds should be attached since the builds in Koji only exist after the
     # build task Freshmaker tracks is complete
-    assert len(event.triggered_container_builds) == 0
+    assert len(event.successful_koji_builds) == 0
 
 
 def test_event_to_complete(cb_one):
@@ -63,7 +63,7 @@ def test_event_to_complete(cb_one):
         'message_id':
             'ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01'
     })[0]
-    event.triggered_container_builds.connect(cb_one)
+    event.successful_koji_builds.connect(cb_one)
     event.triggered_by_advisory.connect(advisory)
     # Load the message to pass to the handler
     with open(path.join(message_dir, 'freshmaker', 'event_to_complete.json'), 'r') as f:
@@ -83,7 +83,7 @@ def test_event_to_complete(cb_one):
     assert event.state == 2
     assert event.state_name == 'COMPLETE'
     assert event.state_reason == '2 of 3 container image(s) failed to rebuild.'
-    assert len(event.triggered_container_builds) == 1
+    assert len(event.successful_koji_builds) == 1
 
 
 @mock.patch('koji.ClientSession')
@@ -125,8 +125,8 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
     assert build.state == 1
     assert build.triggered_by_freshmaker_event.is_connected(event)
 
-    assert event.triggered_container_builds.is_connected(build)
-    assert len(event.triggered_container_builds) == 1
+    assert event.successful_koji_builds.is_connected(build)
+    assert len(event.successful_koji_builds) == 1
 
     mock_koji_session.getTaskResult.assert_called_once_with(16735050)
     mock_koji_session.getBuild.assert_called_once_with(710916, strict=True)
