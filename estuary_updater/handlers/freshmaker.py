@@ -2,8 +2,9 @@
 
 from __future__ import unicode_literals, absolute_import
 
-from estuary.models.freshmaker import FreshmakerEvent
+from estuary.models.freshmaker import FreshmakerEvent, FreshmakerBuild
 from estuary.models.errata import Advisory
+from estuary.utils.general import timestamp_to_datetime
 
 from estuary_updater.handlers.base import BaseHandler
 from estuary_updater import log
@@ -79,13 +80,58 @@ class FreshmakerHandler(BaseHandler):
         """
         build_info = msg['body']['msg']
         event_id = msg['body']['msg']['event_id']
-        build = self.create_or_update_build(build_info, event_id)
-        if build:
-            event = FreshmakerEvent.nodes.get_or_none(id_=str(event_id))
-            if event:
+        freshmaker_build = None
+        build = None
+        # build_id in Freshmaker is actually the task_id
+        if not build_info['build_id']:
+            log.debug('Skipping Koji build update for event {0} because build_id is not set'.format(
+                event_id))
+            freshmaker_build = self.create_or_update_freshmaker_build(build_info, event_id)
+        # Ignore Freshmaker dry run mode, indicated by a negative ID
+        elif build_info['build_id'] < 0:
+            log.debug('Skipping build update for event {0} because it is a dry run'.format(
+                event_id))
+        else:
+            freshmaker_build = self.create_or_update_freshmaker_build(build_info, event_id)
+            build = self.create_or_update_build(build_info, event_id)
+        event = FreshmakerEvent.nodes.get_or_none(id_=str(event_id))
+        if event:
+            if build:
                 event.successful_koji_builds.connect(build)
-            else:
-                log.warn('The Freshmaker event {0} does not exist in Neo4j'.format(event_id))
+            if freshmaker_build:
+                freshmaker_build.conditional_connect(freshmaker_build.event, event)
+        else:
+            log.warning('The Freshmaker event {0} does not exist in Neo4j'.format(event_id))
+
+    def create_or_update_freshmaker_build(self, build, event_id):
+        """
+        Create or update a FreshmakerBuild.
+
+        :param dict build: the build represented in Freshmaker being created or updated
+        :param int event_id: the id of the Freshmaker event
+        :return: the created/updated FreshmakerBuild or None if it cannot be created
+        :rtype: FreshmakerBuild or None
+        """
+        log.debug('Creating FreshmakerBuild {0}'.format(build['build_id']))
+        fb_params = dict(
+            id_=build['id'],
+            build_id=build['build_id'],
+            dep_on=build['dep_on'],
+            name=build['name'],
+            original_nvr=build['original_nvr'],
+            rebuilt_nvr=build['rebuilt_nvr'],
+            state=build['state'],
+            state_name=build['state_name'],
+            state_reason=build['state_reason'],
+            time_submitted=timestamp_to_datetime(build['time_submitted']),
+            type_=build['type'],
+            type_name=build['type_name'],
+            url=build['url']
+        )
+        if build['time_completed']:
+            fb_params['time_completed'] = timestamp_to_datetime(
+                build['time_completed'])
+        return FreshmakerBuild.create_or_update(fb_params)[0]
 
     def create_or_update_build(self, build, event_id):
         """
@@ -101,17 +147,6 @@ class FreshmakerHandler(BaseHandler):
             log.debug('Skipping build update for event {0} because the build is not complete yet'
                       .format(event_id))
             return None
-        # build_id in Freshmaker is actually the task_id
-        elif not build['build_id']:
-            log.debug('Skipping build update for event {0} because build_id is not set'.format(
-                event_id))
-            return None
-        # Ignore Freshmaker dry run mode, indicated by a negative ID
-        elif build['build_id'] < 0:
-            log.debug('Skipping build update for event {0} because it is a dry run'.format(
-                event_id))
-            return
-
         try:
             koji_task_result = self.koji_session.getTaskResult(build['build_id'])
         except Exception:

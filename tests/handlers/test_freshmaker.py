@@ -6,7 +6,7 @@ import json
 from os import path
 from datetime import datetime
 
-from estuary.models.freshmaker import FreshmakerEvent
+from estuary.models.freshmaker import FreshmakerEvent, FreshmakerBuild
 from estuary.models.errata import Advisory
 from estuary.models.koji import ContainerKojiBuild
 import mock
@@ -130,3 +130,19 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
 
     mock_koji_session.getTaskResult.assert_called_once_with(16735050)
     mock_koji_session.getBuild.assert_called_once_with(710916, strict=True)
+
+    freshmaker_build = FreshmakerBuild.nodes.get_or_none(id_='1260')
+    assert freshmaker_build is not None
+    assert freshmaker_build.id_ == '1260'
+    assert freshmaker_build.build_id == 16735050
+    assert freshmaker_build.name == 'e2e-container-test-product-container'
+    assert freshmaker_build.original_nvr == 'e2e-container-test-product-container-7.5-133'
+    assert freshmaker_build.rebuilt_nvr == 'e2e-container-test-product-container-7.4-36.1528968216'
+    assert freshmaker_build.state == 1
+    assert freshmaker_build.state_name == 'DONE'
+    assert freshmaker_build.state_reason == 'Built successfully.'
+    assert freshmaker_build.time_submitted == datetime(2018, 6, 14, 20, 26, 6, tzinfo=pytz.utc)
+    assert freshmaker_build.type_ == 1
+    assert freshmaker_build.type_name == 'IMAGE'
+    assert freshmaker_build.url == 'http://freshmaker.domain.com/api/1/builds/1260'
+    assert event.requested_builds.is_connected(freshmaker_build)
