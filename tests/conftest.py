@@ -13,15 +13,16 @@ import koji
 from estuary_updater.consumer import EstuaryUpdater
 
 
-neomodel_config.DATABASE_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:neo4j@localhost:7687')
-neomodel_config.AUTO_INSTALL_LABELS = True
-
-
 # Reinitialize Neo4j before each test
 @pytest.fixture(autouse=True)
 def run_before_tests():
     """Pytest fixture that prepares the environment before each test."""
     # Code that runs before each test
+    neomodel_config.DATABASE_URL = os.environ.get(
+        'NEO4J_BOLT_URL',
+        'bolt://neo4j:neo4j@localhost:7687'
+    )
+    neomodel_config.AUTO_INSTALL_LABELS = True
     neo4j_db.cypher_query('MATCH (a) DETACH DELETE a')
 
 
