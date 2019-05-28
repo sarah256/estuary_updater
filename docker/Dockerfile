@@ -1,4 +1,4 @@
-FROM fedora:28
+FROM fedora:30
 LABEL maintainer="Factory 2.0"
 
 ENV KRB5_CLIENT_KTNAME /etc/estuary-updater/estuary-updater.keytab

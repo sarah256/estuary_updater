@@ -1,4 +1,4 @@
-FROM fedora:28
+FROM fedora:30
 
 RUN dnf -y install \
   --setopt=deltarpm=0 \
@@ -6,37 +6,24 @@ RUN dnf -y install \
   --setopt=tsflags=nodocs \
   bash \
   nmap-ncat \
-  python2-devel \
   python3-devel \
   # Install RPM dependencies from estuary-api otherwise they'll be installed via pip which won't map
   # to production
-  python2-fedmsg \
   python3-fedmsg \
   python3-flake8 \
-  python2-flask \
   python3-flask \
-  python2-koji \
   python3-koji \
-  python2-mock \
   python3-mock \
-  python2-neomodel \
   python3-neomodel \
-  python2-pyOpenSSL \
   python3-pyOpenSSL \
-  python2-pytest \
   python3-pytest \
-  python2-pytest-cov \
   python3-pytest-cov \
-  python2-pytz \
   python3-pytz \
-  python2-requests \
   python3-requests \
-  python2-requests-kerberos \
   python3-requests-kerberos \
   python3-tox \
+  python3-flake8-docstrings \
   && dnf clean all
-
-RUN pip install flake8-docstrings
 
 VOLUME /src
 WORKDIR /src
