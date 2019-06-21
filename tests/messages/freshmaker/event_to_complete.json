@@ -94,7 +94,9 @@
       "state": 2, 
       "event_type_id": 8, 
       "message_id": "ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01", 
-      "state_name": "COMPLETE"
+      "state_name": "COMPLETE",
+      "time_created": "2019-08-21T13:42:20Z",
+      "time_done": "2099-08-21T13:42:20Z"
     }
   },
   "topic": "/topic/VirtualTopic.eng.freshmaker.event.state.changed",

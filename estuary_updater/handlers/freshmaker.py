@@ -51,14 +51,21 @@ class FreshmakerHandler(BaseHandler):
         :param dict msg: a message to be processed
         """
         msg_id = msg['body']['msg']['message_id']
-        event = FreshmakerEvent.create_or_update({
+        event_params = {
             'id_': str(msg['body']['msg']['id']),
             'event_type_id': msg['body']['msg']['event_type_id'],
             'message_id': msg_id,
             'state': msg['body']['msg']['state'],
             'state_name': msg['body']['msg']['state_name'],
             'state_reason': msg['body']['msg']['state_reason']
-        })[0]
+        }
+
+        if 'time_created' in msg['body']['msg']:
+            event_params['time_created'] = timestamp_to_datetime(msg['body']['msg']['time_created'])
+        if 'time_done' in msg['body']['msg'] and msg['body']['msg']['time_done'] is not None:
+            event_params['time_done'] = timestamp_to_datetime(msg['body']['msg']['time_done'])
+
+        event = FreshmakerEvent.create_or_update(event_params)[0]
 
         advisory_name = msg_id.rsplit('.', 1)[-1]
         if advisory_name[0:4] not in ('RHSA', 'RHBA', 'RHEA'):
