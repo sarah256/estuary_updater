@@ -39,6 +39,8 @@ def test_event_to_building():
     assert event.state_name == 'BUILDING'
     assert event.state_reason == \
         'Waiting for composes to finish in order to start to schedule base images for rebuild.'
+    assert event.time_created == datetime(2019, 8, 21, 13, 42, 20, tzinfo=pytz.utc)
+    assert event.time_done is None
 
     advisory = Advisory.nodes.get_or_none(id_='34625')
     assert advisory is not None
@@ -83,6 +85,8 @@ def test_event_to_complete(cb_one):
     assert event.state == 2
     assert event.state_name == 'COMPLETE'
     assert event.state_reason == '2 of 3 container image(s) failed to rebuild.'
+    assert event.time_created == datetime(2019, 8, 21, 13, 42, 20, tzinfo=pytz.utc)
+    assert event.time_done == datetime(2099, 8, 21, 13, 42, 20, tzinfo=pytz.utc)
     assert len(event.successful_koji_builds) == 1
 
 
