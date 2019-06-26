@@ -122,7 +122,6 @@ class FreshmakerHandler(BaseHandler):
         log.debug('Creating FreshmakerBuild {0}'.format(build['build_id']))
         fb_params = dict(
             id_=build['id'],
-            build_id=build['build_id'],
             dep_on=build['dep_on'],
             name=build['name'],
             original_nvr=build['original_nvr'],
@@ -138,6 +137,9 @@ class FreshmakerHandler(BaseHandler):
         if build['time_completed']:
             fb_params['time_completed'] = timestamp_to_datetime(
                 build['time_completed'])
+        if build['build_id']:
+            fb_params['build_id'] = build['build_id']
+
         return FreshmakerBuild.create_or_update(fb_params)[0]
 
     def create_or_update_build(self, build, event_id):
