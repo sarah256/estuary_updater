@@ -183,7 +183,12 @@ class ErrataHandler(BaseHandler):
             time_attached_string = time_attached_string[:-4]
         time_attached = timestamp_to_datetime(time_attached_string)
 
-        advisory.attached_builds.connect(koji_build, {'time_attached': time_attached})
+        attached_rel = advisory.attached_builds.relationship(koji_build)
+        if attached_rel:
+            if attached_rel.time_attached != time_attached:
+                advisory.attached_builds.replace(koji_build, {'time_attached': time_attached})
+        else:
+            advisory.attached_builds.connect(koji_build, {'time_attached': time_attached})
 
     def builds_removed_handler(self, msg):
         """
