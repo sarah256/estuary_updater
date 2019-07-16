@@ -148,6 +148,8 @@ def test_builds_added_handler(mock_koji_cs, mock_getBuild_one):
     assert build.state == 1
 
     assert advisory.attached_builds.is_connected(build)
+    assert advisory.attached_builds.relationship(build).time_attached == \
+        datetime.datetime(2018, 7, 3, 13, 34, 14, tzinfo=pytz.utc)
     assert build.owner.is_connected(owner)
 
 
