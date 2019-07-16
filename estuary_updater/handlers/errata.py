@@ -178,7 +178,12 @@ class ErrataHandler(BaseHandler):
         nvr = msg['body']['headers']['brew_build']
         koji_build = self.get_or_create_build(nvr)
 
-        advisory.attached_builds.connect(koji_build)
+        time_attached_string = msg['body']['headers']['when']
+        if time_attached_string.endswith(' UTC'):
+            time_attached_string = time_attached_string[:-4]
+        time_attached = timestamp_to_datetime(time_attached_string)
+
+        advisory.attached_builds.connect(koji_build, {'time_attached': time_attached})
 
     def builds_removed_handler(self, msg):
         """
