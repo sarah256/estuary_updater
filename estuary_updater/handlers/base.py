@@ -146,8 +146,10 @@ class BaseHandler(object):
                     ts_format += r'.%f'
                 build_params[time_key] = datetime.strptime(build_info[time_key], ts_format)
 
+        # Use the shortened owner name, if the long version is provided
+        owner_name = build_info['owner_name'].split("/")[0]
         owner = User.create_or_update({
-            'username': build_info['owner_name'],
+            'username': owner_name,
             'email': '{0}@redhat.com'.format(build_info['owner_name'])
         })[0]
 
