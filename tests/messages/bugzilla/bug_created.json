@@ -1,0 +1,132 @@
+{
+    "body":{
+        "i": 0,
+        "msg_id": "ID:messaging.redhat.com",
+        "topic": "/topic/VirtualTopic.eng.bugzilla.bug.create",
+        "timestamp": 1563892582.0,
+        "certificate": null,
+        "signature": null,
+        "username": null,
+        "crypto": null,
+        "msg": {
+          "bug": {
+            "alias": [],
+            "assigned_to": {
+              "id": 389671,
+              "login": "satellite-doc-list@redhat.com",
+              "real_name": ""
+            },
+            "cf_atomic": "",
+            "cf_category": "",
+            "cf_clone_of": "",
+            "cf_cloudforms_team": "",
+            "cf_crm": "",
+            "cf_doc_type": "",
+            "cf_documentation_action": "",
+            "cf_environment": "",
+            "cf_fixed_in": "",
+            "cf_last_closed": null,
+            "cf_mount_type": "",
+            "cf_ovirt_team": "",
+            "cf_regression_status": "",
+            "cf_release_notes": "",
+            "cf_story_points": "",
+            "cf_type": "Bug",
+            "classification": "Red Hat",
+            "component": {
+              "id": 109115,
+              "name": "Documentation"
+            },
+            "creation_time": "2019-07-23T14:36:18",
+            "flags": [],
+            "id": 1732519,
+            "is_private": false,
+            "keywords": [],
+            "last_change_time": "2019-07-23T14:36:18",
+            "operating_system": "Unspecified",
+            "platform": "Unspecified",
+            "priority": "unspecified",
+            "product": {
+              "id": 254,
+              "name": "Red Hat Satellite 6"
+            },
+            "qa_contact": {
+              "id": 389671,
+              "login": "satellite-doc-list@redhat.com",
+              "real_name": ""
+            },
+            "reporter": {
+              "id": 437935,
+              "login": "sarah@redhat.com",
+              "real_name": "Sarah"
+            },
+            "resolution": "",
+            "severity": "low",
+            "status": {
+              "id": 1,
+              "name": "NEW"
+            },
+            "summary": "Adding Manifest file: Menus don't match documentation",
+            "target_milestone": {
+              "id": 786,
+              "name": "Unspecified"
+            },
+            "url": "",
+            "version": {
+              "id": 5645,
+              "name": "6.5.0"
+            },
+            "whiteboard": ""
+          },
+          "event": {
+            "action": "create",
+            "bug_id": 1732519,
+            "change_set": "70126.1563892578.37052",
+            "routing_key": "bug.create",
+            "target": "bug",
+            "time": "2019-07-23T14:36:18",
+            "user": {
+              "id": 437935,
+              "login": "sarah@redhat.com",
+              "real_name": "Sarah"
+            }
+          }
+        },
+        "headers": {
+          "JMSXUserID": "msg-client-bugzilla",
+          "amq6100_destination": "queue://Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>",
+          "amq6100_originalDestination": "topic://VirtualTopic.eng.bugzilla.bug.create",
+          "content-length": "1404",
+          "correlation-id": "74620fe5-4cac-45fd-8852-3d02ea8ee042",
+          "destination": "/topic/VirtualTopic.eng.bugzilla.bug.create",
+          "esbMessageType": "bugzillaNotification",
+          "esbSourceSystem": "bugzilla",
+          "expires": "1563978982760",
+          "message-id": "ID:messaging.redhat.com",
+          "original-destination": "/topic/VirtualTopic.eng.bugzilla.bug.create",
+          "priority": "4",
+          "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>",
+          "timestamp": "1563892582760"
+        },
+        "source_name": "datanommer",
+        "source_version": "0.9.1"
+      },
+      "topic": "/topic/VirtualTopic.eng.bugzilla.bug.create",
+      "headers": {
+        "JMSXUserID": "msg-client-bugzilla",
+        "amq6100_destination": "queue://Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>",
+        "amq6100_originalDestination": "topic://VirtualTopic.eng.bugzilla.bug.create",
+        "content-length": "1404",
+        "correlation-id": "74620fe5-4cac-45fd-8852-3d02ea8ee042",
+        "destination": "/topic/VirtualTopic.eng.bugzilla.bug.create",
+        "esbMessageType": "bugzillaNotification",
+        "esbSourceSystem": "bugzilla",
+        "expires": "1563978982760",
+        "message-id": "ID:messaging.redhat.com",
+        "original-destination": "/topic/VirtualTopic.eng.bugzilla.bug.create",
+        "priority": "4",
+        "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>",
+        "timestamp": "1563892582760"
+      }
+    
+}
