@@ -6,7 +6,8 @@ from estuary_updater.handlers.freshmaker import FreshmakerHandler
 from estuary_updater.handlers.distgit import DistGitHandler
 from estuary_updater.handlers.errata import ErrataHandler
 from estuary_updater.handlers.koji import KojiHandler
+from estuary_updater.handlers.bugzilla import BugzillaHandler
 
 
 # All handler classes are added here
-all_handlers = [DistGitHandler, FreshmakerHandler, ErrataHandler, KojiHandler]
+all_handlers = [DistGitHandler, FreshmakerHandler, ErrataHandler, KojiHandler, BugzillaHandler]
