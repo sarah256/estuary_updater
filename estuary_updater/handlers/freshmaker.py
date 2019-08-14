@@ -51,6 +51,10 @@ class FreshmakerHandler(BaseHandler):
         :param dict msg: a message to be processed
         """
         msg_id = msg['body']['msg']['message_id']
+
+        if msg['body']['msg'].get('dry_run'):
+            return
+
         event_params = {
             'id_': str(msg['body']['msg']['id']),
             'event_type_id': msg['body']['msg']['event_type_id'],
