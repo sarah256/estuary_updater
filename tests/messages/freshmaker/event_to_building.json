@@ -96,7 +96,8 @@
             "message_id": "ID:messaging.domain.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01",
             "state_name": "BUILDING",
             "time_created": "2019-08-21T13:42:20Z",
-            "time_done": null
+            "time_done": null,
+            "dry_run": false
         }
     },
     "topic": "/topic/VirtualTopic.eng.freshmaker.event.state.changed",
