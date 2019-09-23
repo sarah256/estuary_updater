@@ -168,3 +168,32 @@ def module_build_getTag():
         'id': '12233',
         'name': 'module-virt-rhel-20180817161005-9edba152'
     }
+
+
+@pytest.fixture
+def mock_cb_operator():
+    """Return a container build that is an operator."""
+    return {
+        'completion_time': '2018-08-17 16:54:17.000000',
+        'completion_ts': 1534524857.0,
+        'creation_time': '2018-08-17 16:54:29.130570',
+        'creation_ts': 1534524869.13057,
+        'epoch': 'epoch',
+        'id': '973358',
+        'name': 'dv-operator-container',
+        'owner_name': 'emusk',
+        'package_name': 'dv-operator-container',
+        'release': '2',
+        'start_time': '2018-08-17 16:10:29.000000',
+        'start_ts': 1534522229.0,
+        'state': koji.BUILD_STATES['COMPLETE'],
+        'version': '1.0',
+        'extra': {
+            'container_koji_task_id': 17511743,
+            'typeinfo': {
+                'operator-manifests': {
+                    'archive': 'operator_manifests.zip'
+                }
+            }
+        }
+    }

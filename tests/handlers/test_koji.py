@@ -6,7 +6,7 @@ import json
 from os import path
 from datetime import datetime
 
-from estuary.models.koji import KojiBuild, KojiTag, ModuleKojiBuild
+from estuary.models.koji import ContainerKojiBuild, KojiBuild, KojiTag, ModuleKojiBuild
 from estuary.models.distgit import DistGitCommit
 import koji
 import pytz
@@ -205,3 +205,21 @@ def test_build_untag(kb_one, koji_tag):
     handler.handle(msg)
 
     assert not koji_tag.builds.is_connected(kb_one)
+
+
+@mock.patch('koji.ClientSession')
+def test_containerbuild_operator(mock_koji_cs, mock_cb_operator):
+    """Test Koji handler when it receives a message with a new container build as an operator."""
+    mock_koji_session = mock.Mock()
+    mock_koji_session.getBuild.return_value = mock_cb_operator
+    mock_koji_cs.return_value = mock_koji_session
+
+    with open(path.join(message_dir, 'koji', 'containerbuild_operator.json'), 'r') as f:
+        msg = json.load(f)
+    assert KojiHandler.can_handle(msg) is True
+    handler = KojiHandler(config)
+    handler.handle(msg)
+
+    build = ContainerKojiBuild.nodes.get_or_none(id_='973358')
+    assert build.operator is True
+    assert build.id_ == '973358'

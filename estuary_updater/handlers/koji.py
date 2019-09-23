@@ -4,7 +4,7 @@ from __future__ import unicode_literals, absolute_import
 
 import re
 
-from estuary.models.koji import KojiBuild, KojiTag, ModuleKojiBuild
+from estuary.models.koji import KojiBuild, KojiTag, ModuleKojiBuild, ContainerKojiBuild
 from estuary.models.distgit import DistGitCommit
 
 from estuary_updater.handlers.base import BaseHandler
@@ -96,6 +96,12 @@ class KojiHandler(BaseHandler):
                     for component in components:
                         component_build = self.get_or_create_build(component)
                         build.components.connect(component_build)
+            elif build.__label__ == ContainerKojiBuild.__label__:
+                extra_json = msg['body']['msg']['info']['extra']
+                build.operator = bool(
+                    extra_json.get('typeinfo', {}).get('operator-manifests', {}).get('archive')
+                )
+                build.save()
 
             build.conditional_connect(build.commit, commit)
 

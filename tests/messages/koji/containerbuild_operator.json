@@ -1,0 +1,197 @@
+{
+    "body":{
+        "msg": {
+            "attribute": "state",
+            "info": {
+              "build_id": 973358,
+              "cg_id": null,
+              "cg_name": null,
+              "completion_time": "2019-09-23 15:07:34",
+              "completion_ts": 1569251254.0,
+              "creation_event_id": 26413140,
+              "creation_time": "2019-09-23 15:07:35.157883",
+              "creation_ts": 1569251255.15788,
+              "epoch": null,
+              "extra": {
+                "container_koji_task_id": 23660440,
+                "image": {
+                  "autorebuild": false,
+                  "help": null,
+                  "index": {
+                    "digests": {
+                      "application/vnd.docker.distribution.manifest.list.v2+json": "sha256:504b6242a687eda635aeceded00cd28068248f326c9a191250c24650b0e7e04b"
+                    },
+                    "floating_tags": [
+                      "latest",
+                      "1.0"
+                    ],
+                    "pull": [
+                      "domain.local:8888/fuse7-tech-preview/dv-operator@sha256:504b6242a687eda635aeceded00cd28068248f326c9a191250c24650b0e7e04b",
+                      "domain.local:8888/fuse7-tech-preview/dv-operator:1.0-2"
+                    ],
+                    "tags": [
+                      "1.0-2"
+                    ],
+                    "unique_tags": [
+                      "fuse-7.5-openshift-rhel-7-containers-candidate-41826-20190923150359"
+                    ]
+                  },
+                  "isolated": false,
+                  "media_types": [
+                    "application/vnd.docker.distribution.manifest.list.v2+json",
+                    "application/vnd.docker.distribution.manifest.v1+json",
+                    "application/vnd.docker.distribution.manifest.v2+json"
+                  ],
+                  "parent_build_id": 959985,
+                  "parent_image_builds": {
+                    "openshift3/golang-builder:latest": {
+                      "id": 771862,
+                      "nvr": "openshift-golang-builder-container-v4.0.0-1.base"
+                    },
+                    "ubi7-minimal:7-released": {
+                      "id": 959985,
+                      "nvr": "ubi7-minimal-container-7.7-138"
+                    }
+                  },
+                  "parent_images": [
+                    "openshift3/golang-builder:latest",
+                    "ubi7-minimal:7-released"
+                  ],
+                  "yum_repourls": [
+                    "http://git.domain.local/released.repo"
+                  ]
+                },
+                "operator_manifests": {
+                  "appregistry": {
+                    "endpoint": "https://quay.io/cnr",
+                    "registryNamespace": "rh-osbs-operators",
+                    "release": "2.0.0",
+                    "repository": "fuse-dv"
+                  }
+                },
+                "operator_manifests_archive": "operator_manifests.zip",
+                "submitter": "osbs",
+                "typeinfo": {
+                  "image": {
+                    "autorebuild": false,
+                    "help": null,
+                    "index": {
+                      "digests": {
+                        "application/vnd.docker.distribution.manifest.list.v2+json": "sha256:504b6242a687eda635aeceded00cd28068248f326c9a191250c24650b0e7e04b"
+                      },
+                      "floating_tags": [
+                        "latest",
+                        "1.0"
+                      ],
+                      "pull": [
+                        "brew.redhat.com:8888/fuse7-tech-preview/dv-operator@sha256:504b6242a687eda635aeceded00cd28068248f326c9a191250c24650b0e7e04b",
+                        "brew.redhat.com:8888/fuse7-tech-preview/dv-operator:1.0-2"
+                      ],
+                      "tags": [
+                        "1.0-2"
+                      ],
+                      "unique_tags": [
+                        "fuse-7.5-openshift-rhel-7-containers-candidate-41826-20190923150359"
+                      ]
+                    },
+                    "isolated": false,
+                    "media_types": [
+                      "application/vnd.docker.distribution.manifest.list.v2+json",
+                      "application/vnd.docker.distribution.manifest.v1+json",
+                      "application/vnd.docker.distribution.manifest.v2+json"
+                    ],
+                    "parent_build_id": 959985,
+                    "parent_image_builds": {
+                      "openshift3/golang-builder:latest": {
+                        "id": 771862,
+                        "nvr": "openshift-golang-builder-container-v4.0.0-1.base"
+                      },
+                      "ubi7-minimal:7-released": {
+                        "id": 959985,
+                        "nvr": "ubi7-minimal-container-7.7-138"
+                      }
+                    },
+                    "parent_images": [
+                      "openshift3/golang-builder:latest",
+                      "ubi7-minimal:7-released"
+                    ],
+                    "yum_repourls": [
+                      "http://git.domain.local/released.repo"
+                    ]
+                  },
+                  "operator-manifests": {
+                    "archive": "operator_manifests.zip"
+                  }
+                }
+              },
+              "id": 973358,
+              "name": "dv-operator-container",
+              "nvr": "dv-operator-container-1.0-2",
+              "owner_id": 1130,
+              "owner_name": "vhalbert",
+              "package_id": 73025,
+              "package_name": "dv-operator-container",
+              "release": "2",
+              "source": "git://pkgs.com/containers/dv-operator#65ba4fa4fa2db1dab55cb0518ca5b9a1e9e9caf0",
+              "start_time": "2019-09-23 15:04:33",
+              "start_ts": 1569251073.0,
+              "state": 1,
+              "task_id": null,
+              "version": "1.0",
+              "volume_id": 0,
+              "volume_name": "DEFAULT"
+            },
+            "new": 1,
+            "old": null
+        },
+        "headers":{
+            "JMSXUserID": "msg-producer-brew",
+            "JMS_AMQP_FirstAcquirer": "false",
+            "JMS_AMQP_MESSAGE_FORMAT": "0",
+            "JMS_AMQP_NATIVE": "false",
+            "amq6100_destination": "queue://Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>",
+            "amq6100_originalDestination": "topic://VirtualTopic.eng.brew.build.complete",
+            "attribute": "state",
+            "content-length": "3670",
+            "correlation-id": "e0df1346-7ee6-4bc5-8823-a190c4639751",
+            "destination": "/topic/VirtualTopic.eng.brew.build.complete",
+            "expires": "0",
+            "message-id": "ID:messaging.domain.com-46491-1566940538140-7:2106583:0:0:1",
+            "name": "dv-operator-container",
+            "new": "COMPLETE",
+            "old": "null",
+            "original-destination": "/topic/VirtualTopic.eng.brew.build.complete",
+            "priority": "4",
+            "release": "2",
+            "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>",
+            "timestamp": "0",
+            "type": "BuildStateChange",
+            "version": "1.0"
+        }
+    },
+    "topic":"/topic/VirtualTopic.eng.brew.build.complete",
+    "headers":{
+        "JMSXUserID": "msg-producer-brew",
+        "JMS_AMQP_FirstAcquirer": "false",
+        "JMS_AMQP_MESSAGE_FORMAT": "0",
+        "JMS_AMQP_NATIVE": "false",
+        "amq6100_destination": "queue://Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>",
+        "amq6100_originalDestination": "topic://VirtualTopic.eng.brew.build.complete",
+        "attribute": "state",
+        "content-length": "3670",
+        "correlation-id": "e0df1346-7ee6-4bc5-8823-a190c4639751",
+        "destination": "/topic/VirtualTopic.eng.brew.build.complete",
+        "expires": "0",
+        "message-id": "ID:messaging.domain.com-46491-1566940538140-7:2106583:0:0:1",
+        "name": "dv-operator-container",
+        "new": "COMPLETE",
+        "old": "null",
+        "original-destination": "/topic/VirtualTopic.eng.brew.build.complete",
+        "priority": "4",
+        "release": "2",
+        "subscription": "/queue/Consumer.client-datanommer.upshift-prod.VirtualTopic.eng.>",
+        "timestamp": "0",
+        "type": "BuildStateChange",
+        "version": "1.0"
+    }
+}
