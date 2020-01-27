@@ -154,7 +154,18 @@ class BaseHandler(object):
         if force_container_label or self.is_container_build(build_info):
             if original_nvr:
                 build_params['original_nvr'] = original_nvr
-            build = ContainerKojiBuild.create_or_update(build_params)[0]
+            try:
+                build = ContainerKojiBuild.create_or_update(build_params)[0]
+            except neomodel.exceptions.ConstraintValidationFailed:
+                # This must have errantly been created as a KojiBuild instead of a
+                # ContainerKojiBuild, so let's fix that.
+                build = KojiBuild.nodes.get_or_none(id_=build_params['id_'])
+                if not build:
+                    # If there was a constraint validation failure and the build isn't just the
+                    # wrong label, then we can't recover.
+                    raise
+                build.add_label(ContainerKojiBuild.__label__)
+                build = ContainerKojiBuild.create_or_update(build_params)[0]
         elif self.is_module_build(build_info):
             module_extra_info = build_info['extra'].get('typeinfo', {}).get('module')
             build_params['context'] = module_extra_info.get('context')
