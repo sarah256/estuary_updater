@@ -6,7 +6,7 @@ import json
 from os import path
 from datetime import datetime
 
-from estuary.models.koji import ContainerKojiBuild, KojiBuild, KojiTag, ModuleKojiBuild
+from estuary.models.koji import ContainerKojiBuild, KojiBuild, ModuleKojiBuild
 from estuary.models.distgit import DistGitCommit
 import koji
 import pytz
@@ -35,8 +35,6 @@ def test_build_complete(mock_koji_cs, mock_getBuild_complete):
     assert build.completion_time == datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc)
     assert build.creation_time == datetime(2018, 8, 3, 17, 49, 42, 735510, tzinfo=pytz.utc)
     assert build.epoch is None
-    assert build.extra == ('{"source": {"original_url": "git://pkgs.domain.com/rpms/python-'
-                           'attrs?#3be3cb33e6432d8392ac3d9e6edffd990f618432"}}')
     assert build.id_ == '736244'
     assert build.name == 'python-attrs'
     assert build.release == '8.el8+1325+72a36e76'
@@ -51,12 +49,10 @@ def test_build_complete(mock_koji_cs, mock_getBuild_complete):
 
 @mock.patch('koji.ClientSession')
 def test_modulebuild_complete(mock_koji_cs, mock_getBuild_module_complete,
-                              module_build_getTag, mock_getBuild_complete):
+                              mock_getBuild_complete):
     """Test the Koji handler when it recieves a new module build complete message."""
     mock_koji_session = mock.Mock()
     mock_koji_session.getBuild.return_value = mock_getBuild_module_complete
-    mock_koji_session.getTag.return_value = module_build_getTag
-    # These values are present from the return value of getBuild but not listTaggedRPMS
     del mock_getBuild_complete['completion_ts']
     del mock_getBuild_complete['creation_ts']
     del mock_getBuild_complete['start_ts']
@@ -75,10 +71,6 @@ def test_modulebuild_complete(mock_koji_cs, mock_getBuild_module_complete,
     assert build.completion_time == datetime(2018, 8, 17, 16, 54, 17, tzinfo=pytz.utc)
     assert build.creation_time == datetime(2018, 8, 17, 16, 54, 29, 130570, tzinfo=pytz.utc)
     assert build.epoch is None
-    assert build.extra == ('{"typeinfo": {"module": {"modulemd_str": "module", "name": "virt",'
-                           ' "stream": "rhel", "module_build_service_id": 1648, '
-                           '"version": "20180817161005", "context": "9edba152", '
-                           '"content_koji_tag": "module-virt-rhel-20180817161005-9edba152"}}}')
     assert build.id_ == '753795'
     assert build.name == 'virt'
     assert build.release == '20180817161005.9edba152'
@@ -181,30 +173,6 @@ def test_build_deleted(mock_koji_cs):
     build = KojiBuild.nodes.get_or_none(id_='710916')
     assert build is not None
     assert build.state == 2
-
-
-def test_build_tag(kb_one):
-    """Test the Koji handler when it recieves a new build tag message."""
-    with open(path.join(message_dir, 'koji', 'build_tag.json'), 'r') as f:
-        msg = json.load(f)
-    assert KojiHandler.can_handle(msg) is True
-    handler = KojiHandler(config)
-    handler.handle(msg)
-
-    tag = KojiTag.nodes.get_or_none(id_=15638)
-
-    assert tag.builds.is_connected(kb_one)
-
-
-def test_build_untag(kb_one, koji_tag):
-    """Test the Koji handler when it recieves a new build untag message."""
-    with open(path.join(message_dir, 'koji', 'build_untag.json'), 'r') as f:
-        msg = json.load(f)
-    assert KojiHandler.can_handle(msg) is True
-    handler = KojiHandler(config)
-    handler.handle(msg)
-
-    assert not koji_tag.builds.is_connected(kb_one)
 
 
 @mock.patch('koji.ClientSession')

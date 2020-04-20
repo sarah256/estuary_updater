@@ -4,7 +4,6 @@ from __future__ import unicode_literals, absolute_import
 
 import abc
 from datetime import datetime
-import json
 
 import neomodel
 import koji
@@ -131,9 +130,6 @@ class BaseHandler(object):
             'state': build_info['state'],
             'version': build_info['version']
         }
-
-        if build_info.get('extra'):
-            build_params['extra'] = json.dumps(build_info['extra'])
 
         # To handle the case when a message has a null timestamp
         for time_key in ('completion_time', 'creation_time', 'start_time'):

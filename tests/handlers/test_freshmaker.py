@@ -119,7 +119,6 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
     assert build.completion_time == datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc)
     assert build.creation_time == datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc)
     assert build.epoch == 'epoch'
-    assert build.extra == '{"container_koji_task_id": 17511743}'
     assert build.id_ == '710916'
     assert build.name == 'e2e-container-test-product-container'
     assert build.original_nvr == 'e2e-container-test-product-container-7.5-133'

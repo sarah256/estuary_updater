@@ -6,7 +6,7 @@ from datetime import datetime
 
 import pytest
 from neomodel import config as neomodel_config, db as neo4j_db
-from estuary.models.koji import KojiBuild, ContainerKojiBuild, KojiTag
+from estuary.models.koji import KojiBuild, ContainerKojiBuild
 import pytz
 import koji
 
@@ -123,7 +123,6 @@ def cb_one():
         'completion_time': datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc),
         'creation_time': datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc),
         'epoch': 'epoch',
-        'extra': {'container_koji_task_id': 17511743},
         'id_': '710916',
         'name': 'e2e-container-test-product-container',
         'package_name': 'openstack-zaqar-container',
@@ -150,24 +149,6 @@ def kb_one():
         'state': 1,
         'version': '0.1'
     })[0]
-
-
-@pytest.fixture
-def koji_tag():
-    """Return a KojiTag."""
-    return KojiTag.get_or_create({
-        'id_': '15638',
-        'name': 'rhos-13.0-rhel-7-pending'
-    })[0]
-
-
-@pytest.fixture
-def module_build_getTag():
-    """Return a KojiTag in the format of koji.ClientSession.getTag."""
-    return {
-        'id': '12233',
-        'name': 'module-virt-rhel-20180817161005-9edba152'
-    }
 
 
 @pytest.fixture

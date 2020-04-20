@@ -142,7 +142,6 @@ def test_builds_added_handler(mock_koji_cs, mock_getBuild_one):
     assert build.completion_time == datetime.datetime(2018, 6, 15, 20, 26, 38, tzinfo=pytz.utc)
     assert build.creation_time == datetime.datetime(2018, 6, 15, 20, 20, 38, tzinfo=pytz.utc)
     assert build.epoch == 'epoch'
-    assert build.extra == '{"container_koji_task_id": 17511743}'
     assert build.id_ == '710916'
     assert build.start_time == datetime.datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc)
     assert build.state == 1
