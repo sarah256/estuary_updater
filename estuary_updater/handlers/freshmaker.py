@@ -58,7 +58,6 @@ class FreshmakerHandler(BaseHandler):
         event_params = {
             'id_': str(msg['body']['msg']['id']),
             'event_type_id': msg['body']['msg']['event_type_id'],
-            'message_id': msg_id,
             'state': msg['body']['msg']['state'],
             'state_name': msg['body']['msg']['state_name'],
             'state_reason': msg['body']['msg']['state_reason']

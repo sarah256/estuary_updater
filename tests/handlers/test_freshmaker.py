@@ -33,8 +33,6 @@ def test_event_to_building():
     assert event is not None
     assert event.id_ == '2092'
     assert event.event_type_id == 8
-    assert event.message_id == \
-        'ID:messaging.domain.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01'
     assert event.state == 1
     assert event.state_name == 'BUILDING'
     assert event.state_reason == \
@@ -62,8 +60,6 @@ def test_event_to_complete(cb_one):
         'state': 1,
         'state_name': 'BUILDING',
         'event_type_id': 8,
-        'message_id':
-            'ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01'
     })[0]
     event.successful_koji_builds.connect(cb_one)
     event.triggered_by_advisory.connect(advisory)
@@ -80,8 +76,6 @@ def test_event_to_complete(cb_one):
     event = FreshmakerEvent.nodes.get_or_none(id_='2194')
     assert event is not None
     assert event.event_type_id == 8
-    assert event.message_id == \
-        'ID:messaging.domain.com-42045-1527890187852-9:1045742:0:0:1.RHBA-8018:0600-01'
     assert event.state == 2
     assert event.state_name == 'COMPLETE'
     assert event.state_reason == '2 of 3 container image(s) failed to rebuild.'
@@ -102,7 +96,6 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
         'state': 1,
         'state_name': 'BUILDING',
         'event_type_id': 8,
-        'message_id': 'ID:messaging.domain.com-42045-1527890187852-9:704208:0:0:1.RHBA-8018:0593-01'
     })[0]
     # Load the message to pass to the handler
     with open(path.join(message_dir, 'freshmaker', 'build_state_change.json'), 'r') as f:
