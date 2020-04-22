@@ -66,7 +66,6 @@ def test_activity_status_handler(msg_type):
         assert advisory.created_at == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
         assert advisory.issue_date == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
         assert advisory.product_name == 'Red Hat Enterprise Linux'
-        assert advisory.product_short_name == 'RHEL'
         assert advisory.release_date is None
         assert advisory.security_impact == 'None'
         assert advisory.security_sla is None
@@ -102,7 +101,6 @@ def test_activity_status_handler_embargoed(mock_get):
     assert advisory.created_at is None
     assert advisory.issue_date is None
     assert advisory.product_name is None
-    assert advisory.product_short_name is None
     assert advisory.release_date is None
     assert advisory.security_impact is None
     assert advisory.security_sla is None
