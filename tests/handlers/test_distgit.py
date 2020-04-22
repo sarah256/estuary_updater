@@ -67,31 +67,6 @@ def test_distgit_commit():
     assert not commit.reverted_bugs.all()
 
 
-def test_distgit_push():
-    """Test the dist-git handler when it recieves a new push message."""
-    with open(path.join(message_dir, 'distgit', 'distgit_push.json'), 'r') as f:
-        msg = json.load(f)
-
-    assert DistGitHandler.can_handle(msg) is True
-    handler = DistGitHandler(config)
-    handler.handle(msg)
-
-    child = DistGitCommit.nodes.get_or_none(hash_='87eec17328848d7adcf3942a70d84db21bd806a3')
-    assert child is not None
-
-    parent = DistGitCommit.nodes.get_or_none(hash_='c59abf1e21d273c3b4f3d44ca5c0618eb59627d1')
-    assert parent is not None
-
-    assert child.parent.is_connected(parent)
-
-    parent = child
-
-    child = DistGitCommit.nodes.get_or_none(hash_='d8c16b6330faf7aa124b466235e70d519d1c0a06')
-    assert child is not None
-
-    assert child.parent.is_connected(parent)
-
-
 @pytest.mark.parametrize('msg,related,resolves,reverted', [
     ('Layer: Fix memleaks\n\nResolves: rhbz1534646, rhbz1484051\nRelated: #1234567, rhbz#2345678\n',
         ['1234567', '2345678'], ['1534646', '1484051'], []),

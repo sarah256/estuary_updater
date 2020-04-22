@@ -25,8 +25,7 @@ class DistGitHandler(BaseHandler):
         :rtype: bool
         """
         supported_topics = [
-            '/topic/VirtualTopic.eng.distgit.commit',
-            '/topic/VirtualTopic.eng.distgit.push'
+            '/topic/VirtualTopic.eng.distgit.commit'
         ]
         return msg['topic'] in supported_topics
 
@@ -38,8 +37,6 @@ class DistGitHandler(BaseHandler):
         """
         if msg['topic'] == '/topic/VirtualTopic.eng.distgit.commit':
             self.commit_handler(msg)
-        elif msg['topic'] == '/topic/VirtualTopic.eng.distgit.push':
-            self.push_handler(msg)
         else:
             raise RuntimeError('This message is unable to be handled: {0}'.format(msg))
 
@@ -109,22 +106,6 @@ class DistGitHandler(BaseHandler):
         branch.contributors.connect(author)
         branch.commits.connect(commit)
 
-    def push_handler(self, msg):
-        """
-        Handle dist-git push messages by updating the parent-child relationship of commits in Neo4j.
-
-        :param dict msg: a message to be processed
-        """
-        commits = msg['body']['msg']['commits']
-        parent = DistGitCommit.get_or_create({
-            'hash_': msg['body']['msg']['oldrev']
-        })[0]
-        for commit in commits:
-            child = DistGitCommit.get_or_create({
-                'hash_': commit
-            })[0]
-            child.parent.connect(parent)
-            parent = child
 
     @staticmethod
     def parse_bugzilla_bugs(commit_message):
