@@ -7,7 +7,7 @@ from os import path
 import datetime
 
 import pytest
-from estuary.models.distgit import DistGitCommit, DistGitBranch, DistGitRepo
+from estuary.models.distgit import DistGitCommit, DistGitRepo
 import pytz
 
 from tests import message_dir
@@ -38,9 +38,6 @@ def test_distgit_commit():
     assert commit.commit_date == datetime.datetime(2018, 8, 16, 13, 45, 20, tzinfo=pytz.utc)
     assert commit.author.get().username == 'emusk'
     assert commit.author.get().email == 'emusk@redhat.com'
-    assert commit.branches[0].name == 'rhel-7.6'
-    assert commit.branches[0].repo_namespace == 'rpms'
-    assert commit.branches[0].repo_name == 'openldap'
     assert commit.repos[0].name == 'openldap'
     assert commit.repos[0].namespace == 'rpms'
 
@@ -49,15 +46,11 @@ def test_distgit_commit():
     bug_related = BugzillaBug.nodes.get_or_none(id_='1234567')
     bug_related2 = BugzillaBug.nodes.get_or_none(id_='2345678')
     repo = DistGitRepo.nodes.get_or_none(name='openldap')
-    branch = DistGitBranch.nodes.get_or_none(name='rhel-7.6')
     author = User.nodes.get_or_none(username='emusk')
 
     # Check that relationships are connected
     assert repo.contributors.is_connected(author)
-    assert repo.branches.is_connected(branch)
     assert repo.commits.connect(commit)
-    assert branch.contributors.is_connected(author)
-    assert branch.commits.connect(commit)
     assert commit.resolved_bugs.is_connected(bug)
     assert commit.resolved_bugs.is_connected(bug2)
     assert len(commit.resolved_bugs.all()) == 2

@@ -4,7 +4,7 @@ from __future__ import unicode_literals, absolute_import
 
 import re
 
-from estuary.models.distgit import DistGitRepo, DistGitBranch, DistGitCommit
+from estuary.models.distgit import DistGitRepo, DistGitCommit
 from estuary.models.bugzilla import BugzillaBug
 from estuary.models.user import User
 from estuary.utils.general import timestamp_to_datetime
@@ -51,12 +51,6 @@ class DistGitHandler(BaseHandler):
             'name': msg['headers']['repo']
         })[0]
 
-        branch = DistGitBranch.get_or_create({
-            'name': msg['headers']['branch'],
-            'repo_namespace': msg['headers']['namespace'],
-            'repo_name': msg['headers']['repo']
-        })[0]
-
         # Get the username from the email if the email is a Red Hat email
         email = msg['headers']['email'].lower()
         if email.endswith('@redhat.com'):
@@ -100,12 +94,7 @@ class DistGitHandler(BaseHandler):
         commit.conditional_connect(commit.author, author)
 
         repo.contributors.connect(author)
-        repo.branches.connect(branch)
         repo.commits.connect(commit)
-
-        branch.contributors.connect(author)
-        branch.commits.connect(commit)
-
 
     @staticmethod
     def parse_bugzilla_bugs(commit_message):
