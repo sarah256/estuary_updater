@@ -130,7 +130,6 @@ class FreshmakerHandler(BaseHandler):
             state_name=build['state_name'],
             state_reason=build['state_reason'],
             time_submitted=timestamp_to_datetime(build['time_submitted']),
-            type_=build['type'],
             type_name=build['type_name'],
             url=build['url']
         )
