@@ -129,5 +129,4 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
     assert freshmaker_build.state_reason == 'Built successfully.'
     assert freshmaker_build.time_submitted == datetime(2018, 6, 14, 20, 26, 6, tzinfo=pytz.utc)
     assert freshmaker_build.type_name == 'IMAGE'
-    assert freshmaker_build.url == 'http://freshmaker.domain.com/api/1/builds/1260'
     assert event.requested_builds.is_connected(freshmaker_build)

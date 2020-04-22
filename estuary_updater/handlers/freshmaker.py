@@ -131,7 +131,6 @@ class FreshmakerHandler(BaseHandler):
             state_reason=build['state_reason'],
             time_submitted=timestamp_to_datetime(build['time_submitted']),
             type_name=build['type_name'],
-            url=build['url']
         )
         if build['time_completed']:
             fb_params['time_completed'] = timestamp_to_datetime(
