@@ -14,7 +14,6 @@ from tests import message_dir
 from estuary_updater.handlers.distgit import DistGitHandler
 from estuary.models.bugzilla import BugzillaBug
 from estuary_updater import config
-from estuary.models.user import User
 
 
 def test_distgit_commit():
@@ -46,10 +45,8 @@ def test_distgit_commit():
     bug_related = BugzillaBug.nodes.get_or_none(id_='1234567')
     bug_related2 = BugzillaBug.nodes.get_or_none(id_='2345678')
     repo = DistGitRepo.nodes.get_or_none(name='openldap')
-    author = User.nodes.get_or_none(username='emusk')
 
     # Check that relationships are connected
-    assert repo.contributors.is_connected(author)
     assert repo.commits.connect(commit)
     assert commit.resolved_bugs.is_connected(bug)
     assert commit.resolved_bugs.is_connected(bug2)

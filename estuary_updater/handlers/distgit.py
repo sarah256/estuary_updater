@@ -93,7 +93,6 @@ class DistGitHandler(BaseHandler):
 
         commit.conditional_connect(commit.author, author)
 
-        repo.contributors.connect(author)
         repo.commits.connect(commit)
 
     @staticmethod
