@@ -63,7 +63,6 @@ def test_activity_status_handler(msg_type):
 
         assert advisory.actual_ship_date is None
         assert advisory.advisory_name == 'RHEA-2018:34661-01'
-        assert advisory.content_types == ['rpm']
         assert advisory.created_at == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
         assert advisory.issue_date == datetime.datetime(2018, 6, 15, 15, 26, 38, tzinfo=pytz.utc)
         assert advisory.product_name == 'Red Hat Enterprise Linux'
@@ -100,7 +99,6 @@ def test_activity_status_handler_embargoed(mock_get):
     assert advisory is not None
     assert advisory.actual_ship_date is None
     assert advisory.advisory_name == 'REDACTED'
-    assert advisory.content_types is None
     assert advisory.created_at is None
     assert advisory.issue_date is None
     assert advisory.product_name is None

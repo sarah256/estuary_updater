@@ -107,7 +107,6 @@ class ErrataHandler(BaseHandler):
 
             advisory_params = {
                 'advisory_name': advisory_info['fulladvisory'],
-                'content_types': advisory_info['content_types'],
                 'id_': advisory_id,
                 'product_name': product_json['product']['name'],
                 'product_short_name': msg['body']['msg']['product'],
