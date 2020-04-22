@@ -27,7 +27,6 @@ def test_bugzilla_bug():
     bug = BugzillaBug.nodes.get_or_none(id_='1732519')
     assert bug is not None
     assert bug.id_ == '1732519'
-    assert bug.classification == 'Red Hat'
     assert bug.creation_time == datetime(2019, 7, 23, 14, 36, 18, tzinfo=pytz.utc)
     assert bug.modified_time == datetime(2019, 7, 23, 14, 36, 18, tzinfo=pytz.utc)
     assert bug.priority == 'unspecified'

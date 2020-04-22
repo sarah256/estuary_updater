@@ -47,7 +47,6 @@ class BugzillaHandler(BaseHandler):
         bug_data = msg['body']['msg']['bug']
         bug_params = {
             'id_': str(bug_data['id']),
-            'classification': bug_data['classification'],
             'creation_time': timestamp_to_datetime(bug_data['creation_time']),
             'modified_time': timestamp_to_datetime(bug_data['last_change_time']),
             'priority': bug_data['priority'],
