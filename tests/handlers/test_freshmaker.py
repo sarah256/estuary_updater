@@ -32,7 +32,6 @@ def test_event_to_building():
     event = FreshmakerEvent.nodes.get_or_none(id_='2092')
     assert event is not None
     assert event.id_ == '2092'
-    assert event.event_type_id == 8
     assert event.state_name == 'BUILDING'
     assert event.state_reason == \
         'Waiting for composes to finish in order to start to schedule base images for rebuild.'
@@ -57,7 +56,6 @@ def test_event_to_complete(cb_one):
     event = FreshmakerEvent.get_or_create({
         'id_': '2194',
         'state_name': 'BUILDING',
-        'event_type_id': 8,
     })[0]
     event.successful_koji_builds.connect(cb_one)
     event.triggered_by_advisory.connect(advisory)
@@ -73,7 +71,6 @@ def test_event_to_complete(cb_one):
 
     event = FreshmakerEvent.nodes.get_or_none(id_='2194')
     assert event is not None
-    assert event.event_type_id == 8
     assert event.state_name == 'COMPLETE'
     assert event.state_reason == '2 of 3 container image(s) failed to rebuild.'
     assert event.time_created == datetime(2019, 8, 21, 13, 42, 20, tzinfo=pytz.utc)
@@ -91,7 +88,6 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
     event = FreshmakerEvent.get_or_create({
         'id_': '2094',
         'state_name': 'BUILDING',
-        'event_type_id': 8,
     })[0]
     # Load the message to pass to the handler
     with open(path.join(message_dir, 'freshmaker', 'build_state_change.json'), 'r') as f:
