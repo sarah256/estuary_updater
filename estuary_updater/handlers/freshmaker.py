@@ -58,7 +58,6 @@ class FreshmakerHandler(BaseHandler):
         event_params = {
             'id_': str(msg['body']['msg']['id']),
             'event_type_id': msg['body']['msg']['event_type_id'],
-            'state': msg['body']['msg']['state'],
             'state_name': msg['body']['msg']['state_name'],
             'state_reason': msg['body']['msg']['state_reason']
         }
@@ -129,7 +128,6 @@ class FreshmakerHandler(BaseHandler):
             name=build['name'],
             original_nvr=build['original_nvr'],
             rebuilt_nvr=build['rebuilt_nvr'],
-            state=build['state'],
             state_name=build['state_name'],
             state_reason=build['state_reason'],
             time_submitted=timestamp_to_datetime(build['time_submitted']),
@@ -155,7 +153,7 @@ class FreshmakerHandler(BaseHandler):
         :rtype: ContainerKojiBuild or None
         """
         # Builds in Koji only exist when the Koji task this Freshmaker build represents completes
-        if build['state'] != 1:
+        if build['state_name'] != 'DONE':
             log.debug('Skipping build update for event {0} because the build is not complete yet'
                       .format(event_id))
             return None

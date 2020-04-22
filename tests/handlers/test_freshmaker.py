@@ -33,7 +33,6 @@ def test_event_to_building():
     assert event is not None
     assert event.id_ == '2092'
     assert event.event_type_id == 8
-    assert event.state == 1
     assert event.state_name == 'BUILDING'
     assert event.state_reason == \
         'Waiting for composes to finish in order to start to schedule base images for rebuild.'
@@ -57,7 +56,6 @@ def test_event_to_complete(cb_one):
     })[0]
     event = FreshmakerEvent.get_or_create({
         'id_': '2194',
-        'state': 1,
         'state_name': 'BUILDING',
         'event_type_id': 8,
     })[0]
@@ -76,7 +74,6 @@ def test_event_to_complete(cb_one):
     event = FreshmakerEvent.nodes.get_or_none(id_='2194')
     assert event is not None
     assert event.event_type_id == 8
-    assert event.state == 2
     assert event.state_name == 'COMPLETE'
     assert event.state_reason == '2 of 3 container image(s) failed to rebuild.'
     assert event.time_created == datetime(2019, 8, 21, 13, 42, 20, tzinfo=pytz.utc)
@@ -93,7 +90,6 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
     mock_koji_cs.return_value = mock_koji_session
     event = FreshmakerEvent.get_or_create({
         'id_': '2094',
-        'state': 1,
         'state_name': 'BUILDING',
         'event_type_id': 8,
     })[0]
@@ -118,7 +114,6 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
     assert build.release == '36.1528968216'
     assert build.version == '7.4'
     assert build.start_time == datetime(2018, 6, 15, 20, 21, 38, tzinfo=pytz.utc)
-    assert build.state == 1
     assert build.triggered_by_freshmaker_event.is_connected(event)
 
     assert event.successful_koji_builds.is_connected(build)
@@ -134,7 +129,6 @@ def test_build_state_change(mock_koji_cs, mock_getBuild_one):
     assert freshmaker_build.name == 'e2e-container-test-product-container'
     assert freshmaker_build.original_nvr == 'e2e-container-test-product-container-7.5-133'
     assert freshmaker_build.rebuilt_nvr == 'e2e-container-test-product-container-7.4-36.1528968216'
-    assert freshmaker_build.state == 1
     assert freshmaker_build.state_name == 'DONE'
     assert freshmaker_build.state_reason == 'Built successfully.'
     assert freshmaker_build.time_submitted == datetime(2018, 6, 14, 20, 26, 6, tzinfo=pytz.utc)
